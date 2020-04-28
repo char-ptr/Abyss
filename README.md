@@ -1,0 +1,2 @@
+# Bot-Typescript
+ typescript version.
