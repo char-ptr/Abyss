@@ -10,24 +10,39 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const class_1 = require("../../m/class");
+const clean = (text) => {
+    if (typeof (text) === "string")
+        return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
+    else
+        return text;
+};
 module.exports = class test extends class_1.Command {
     constructor() {
         super({
-            Name: 'test',
-            Desc: 'Casual test to see if command handler is working.',
+            Name: 'exe',
+            Desc: 'Execute javascript.',
             Guild: false,
             Owner: true,
             Hidden: true,
             Args: [new class_1.CommandArgument({
-                    Name: 'Test',
+                    Name: 'code',
                     Needed: true,
-                    Type: "bool",
+                    Type: "str",
                     Perms: null,
                     Position: 'all'
                 })]
         });
         this.run = (message, client, args) => __awaiter(this, void 0, void 0, function* () {
-            console.log('Test worked!', args);
+            try {
+                const code = this.GetArg('code', args);
+                let evaled = yield eval(code);
+                if (typeof evaled !== "string")
+                    evaled = require("util").inspect(evaled);
+                message.channel.send(clean(evaled), { code: "ts", split: true });
+            }
+            catch (err) {
+                message.channel.send(`\`ERROR\` \`\`\`ts\n${clean(err)}\n\`\`\``);
+            }
             return { Worked: true };
         });
     }

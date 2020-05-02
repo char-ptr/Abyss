@@ -8,90 +8,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
-var __values = (this && this.__values) || function(o) {
-    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-    if (m) return m.call(o);
-    if (o && typeof o.length === "number") return {
-        next: function () {
-            if (o && i >= o.length) o = void 0;
-            return { value: o && o[i++], done: !o };
-        }
-    };
-    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-};
-var __read = (this && this.__read) || function (o, n) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator];
-    if (!m) return o;
-    var i = m.call(o), r, ar = [], e;
-    try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-    }
-    catch (error) { e = { error: error }; }
-    finally {
-        try {
-            if (r && !r.done && (m = i["return"])) m.call(i);
-        }
-        finally { if (e) throw e.error; }
-    }
-    return ar;
-};
-var __spread = (this && this.__spread) || function () {
-    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
-    return ar;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var __1 = require("..");
-var config_1 = require("./config");
-var GetCommandFromS = function (v) {
-    var e_1, _a;
-    var _b;
-    var c = false;
-    try {
-        for (var _c = __values(Array.from(__1.Commands.values())), _d = _c.next(); !_d.done; _d = _c.next()) {
-            var c2 = _d.value;
-            c = (_b = c2.get(v)) !== null && _b !== void 0 ? _b : false;
-            if (c)
-                break;
-        }
-    }
-    catch (e_1_1) { e_1 = { error: e_1_1 }; }
-    finally {
-        try {
-            if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
-        }
-        finally { if (e_1) throw e_1.error; }
+const discord_js_1 = require("discord.js");
+const config_1 = require("./config");
+const bot_1 = require("../bot");
+/**
+ *
+ * @param v The string which you would like to try and find a command with.
+ */
+const GetCommandFromS = (v) => {
+    var _a;
+    let c = false;
+    for (let c2 of Array.from(bot_1.Commands.values())) {
+        c = (_a = c2.get(v)) !== null && _a !== void 0 ? _a : false;
+        if (c)
+            break;
     }
     return c !== null && c !== void 0 ? c : false;
 };
 exports.GetCommandFromS = GetCommandFromS;
-exports.IsIdOwner = function (s) {
+/**
+ *
+ * @param s the "Snowfake" of the user which you wish to see is an owner.
+ */
+exports.IsIdOwner = (s) => {
     if (typeof config_1.Owner === 'string') {
         if (config_1.Owner === s)
             return true;
@@ -105,151 +45,118 @@ exports.IsIdOwner = function (s) {
     else
         return false;
 };
-exports.OwnerToUserArray = function (client) { return __awaiter(void 0, void 0, void 0, function () {
-    var o, o, Owner_1, Owner_1_1, v, _a, e_2_1;
-    var e_2, _b;
-    return __generator(this, function (_c) {
-        switch (_c.label) {
-            case 0:
-                if (!(typeof config_1.Owner === 'string')) return [3 /*break*/, 2];
-                return [4 /*yield*/, client.users.fetch(config_1.Owner).catch(function (e) { return process.exit(66); })];
-            case 1:
-                o = _c.sent();
-                if (!o)
-                    process.exit(66);
-                return [2 /*return*/, [o]];
-            case 2:
-                if (!Array.isArray(config_1.Owner)) return [3 /*break*/, 11];
-                o = [];
-                _c.label = 3;
-            case 3:
-                _c.trys.push([3, 8, 9, 10]);
-                Owner_1 = __values(config_1.Owner), Owner_1_1 = Owner_1.next();
-                _c.label = 4;
-            case 4:
-                if (!!Owner_1_1.done) return [3 /*break*/, 7];
-                v = Owner_1_1.value;
-                _a = [o];
-                return [4 /*yield*/, client.users.fetch(v).catch(function (e) { return process.exit(66); })];
-            case 5:
-                o = __spread.apply(void 0, _a.concat([[_c.sent()]]));
-                _c.label = 6;
-            case 6:
-                Owner_1_1 = Owner_1.next();
-                return [3 /*break*/, 4];
-            case 7: return [3 /*break*/, 10];
-            case 8:
-                e_2_1 = _c.sent();
-                e_2 = { error: e_2_1 };
-                return [3 /*break*/, 10];
-            case 9:
-                try {
-                    if (Owner_1_1 && !Owner_1_1.done && (_b = Owner_1.return)) _b.call(Owner_1);
-                }
-                finally { if (e_2) throw e_2.error; }
-                return [7 /*endfinally*/];
-            case 10:
-                if (!o || o.length === 0)
-                    process.exit(66);
-                return [2 /*return*/, o];
-            case 11:
-                process.exit(66);
-                _c.label = 12;
-            case 12: return [2 /*return*/];
+/**
+ *
+ * @param client The discord client.
+ * @description Don't use this anymore, Cba to fix at the moment.
+ */
+exports.OwnerToUserArray = (client) => __awaiter(void 0, void 0, void 0, function* () {
+    if (typeof config_1.Owner === 'string') {
+        let uu = yield client.shard.broadcastEval(`this.users.fetch(${config_1.Owner})`);
+        if (!uu)
+            process.exit(66);
+        else if (uu instanceof discord_js_1.User)
+            return [uu];
+        else
+            process.exit(66);
+    }
+    else if (Array.isArray(config_1.Owner)) {
+        let o = [];
+        for (let v of config_1.Owner) {
+            console.log(v, config_1.Owner);
+            let uu = yield client.shard.broadcastEval(`console.log(${v.toString()});this.users.cache.get(${v.toString()}) ? this.users.cache.get(${v.toString()}) : this.users.fetch(${v.toString()}).catch(e => console.log("Unable to find the owners on the shard ", this.shard.id))`);
+            if (!uu)
+                continue;
+            console.log(uu);
+            if (uu instanceof discord_js_1.User) {
+                o = [...o, uu];
+            }
         }
-    });
-}); };
-var GetMemberFromGuild = function (msg, str) { return __awaiter(void 0, void 0, void 0, function () {
-    var guild, could, ms, ms_1, ms_1_1, v, coll, n_1, sel;
-    var e_3, _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                if (!str)
-                    return [2 /*return*/, null];
-                guild = msg.guild;
-                could = [];
-                return [4 /*yield*/, guild.members.fetch()];
-            case 1:
-                ms = _b.sent();
-                try {
-                    for (ms_1 = __values(ms), ms_1_1 = ms_1.next(); !ms_1_1.done; ms_1_1 = ms_1.next()) {
-                        v = ms_1_1.value;
-                        if (v[1].displayName.toLowerCase().match(str.toLowerCase())) {
-                            could = __spread(could, [v[1]]);
-                            continue;
-                        }
-                        if (v[0] === str) {
-                            could = __spread(could, [v[1]]);
-                            continue;
-                        }
-                        if (v[1].user.username.toLowerCase().match(str.toLowerCase())) {
-                            could = __spread(could, [v[1]]);
-                            continue;
-                        }
-                    }
-                }
-                catch (e_3_1) { e_3 = { error: e_3_1 }; }
-                finally {
-                    try {
-                        if (ms_1_1 && !ms_1_1.done && (_a = ms_1.return)) _a.call(ms_1);
-                    }
-                    finally { if (e_3) throw e_3.error; }
-                }
-                if (!could)
-                    return [2 /*return*/, null];
-                if (!(could.length <= 0)) return [3 /*break*/, 2];
-                return [2 /*return*/, null];
-            case 2:
-                if (!(could.length >= 2)) return [3 /*break*/, 5];
-                return [4 /*yield*/, msg.channel.send("Sorry for interupting the command, but i have multiple results for the string \"" + str + "\", could you prehaps tell me which one you ment out of these:\n" + could.map(function (v, i) { return i + 1 + ":" + v.displayName + (v.nickname ? " `(" + v.user.username + ")`" : ''); }).join('\n') + " ")];
-            case 3:
-                _b.sent();
-                return [4 /*yield*/, msg.channel.awaitMessages(function (m) { return m.member.id == msg.author.id && !isNaN(+m.content) && +m.content - 1 in could; }, { max: 1, time: 30 * 1000 })];
-            case 4:
-                coll = _b.sent();
-                if (coll.size <= 0)
-                    return [2 /*return*/, null];
-                n_1 = +coll.first().content - 1;
-                sel = could.filter(function (v, i) { return i == n_1; })[0];
-                return [2 /*return*/, sel !== null && sel !== void 0 ? sel : null];
-            case 5: return [2 /*return*/, could[0]];
+        if (!o || o.length === 0)
+            process.exit(66);
+        return o;
+    }
+    else
+        process.exit(66);
+});
+/**
+ *
+ * @param msg The message object which initiated the search. This can also be a guild if.
+ * @param str The string which you would like to match a user with.
+ */
+const GetMemberFromGuild = (msg, str) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!str)
+        return null;
+    let MorG = msg instanceof discord_js_1.Message;
+    let guild = MorG ? msg.guild : msg;
+    let could = [];
+    let ms = yield guild.members.fetch();
+    for (let v of ms) {
+        if (v[1].displayName.toLowerCase().match(str.toLowerCase())) {
+            could = [...could, v[1]];
+            continue;
         }
-    });
-}); };
-var Convert = function (s, wanted, m) { return __awaiter(void 0, void 0, void 0, function () {
-    var ts, conv, _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                ts = [];
-                conv = null;
-                _a = wanted;
-                switch (_a) {
-                    case 'member': return [3 /*break*/, 1];
-                    case 'str': return [3 /*break*/, 3];
-                    case 'num': return [3 /*break*/, 4];
-                    case 'bool': return [3 /*break*/, 5];
-                }
-                return [3 /*break*/, 6];
-            case 1: return [4 /*yield*/, GetMemberFromGuild(m, s)];
-            case 2:
-                conv = (_b.sent());
-                return [3 /*break*/, 7];
-            case 3:
-                conv = s;
-                return [3 /*break*/, 7];
-            case 4:
-                conv = isNaN(Number(s)) ? null : Number(s);
-                return [3 /*break*/, 7];
-            case 5:
-                conv = (s === 'true');
-                return [3 /*break*/, 7];
-            case 6:
-                console.log('Unable to find that type.');
-                return [2 /*return*/, null];
-            case 7: return [2 /*return*/, conv];
+        if (v[0] === str) {
+            could = [...could, v[1]];
+            continue;
         }
+        if (v[1].user.username.toLowerCase().match(str.toLowerCase())) {
+            could = [...could, v[1]];
+            continue;
+        }
+    }
+    if (!could)
+        return null;
+    if (could.length <= 0)
+        return null;
+    else if (could.length >= 2) {
+        if (msg instanceof discord_js_1.Guild)
+            return could[0];
+        yield msg.channel.send(`Sorry for interupting the command, but i have multiple results for the string "${str}", could you prehaps tell me which one you ment out of these:\n${could.map((v, i) => `${i + 1}:${v.displayName}${v.nickname ? ` \`(${v.user.username})\`` : ''}`).join('\n')} `);
+        let coll = yield msg.channel.awaitMessages(m => m.member.id == msg.author.id && !isNaN(+m.content) && +m.content - 1 in could, { max: 1, time: 30 * 1000 });
+        if (coll.size <= 0)
+            return null;
+        let n = +coll.first().content - 1;
+        let sel = could.filter((v, i) => i == n)[0];
+        return sel !== null && sel !== void 0 ? sel : null;
+    }
+    else
+        return could[0];
+});
+function PartialConv(thing) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (thing.partial)
+            return yield thing.fetch();
+        return thing;
     });
-}); };
+}
+exports.PartialConv = PartialConv;
+/**
+ *
+ * @param s the string which you're converting
+ * @param wanted The wanted type.
+ * @param m Message object.
+ */
+const Convert = (s, wanted, m) => __awaiter(void 0, void 0, void 0, function* () {
+    let ts = [];
+    let conv = null;
+    switch (wanted) {
+        case 'member':
+            conv = (yield GetMemberFromGuild(m, s));
+            break;
+        case 'str':
+            conv = s;
+            break;
+        case 'num':
+            conv = isNaN(Number(s)) ? null : Number(s);
+            break;
+        case 'bool':
+            conv = (s === 'true');
+            break;
+        default:
+            console.log('Unable to find that type.');
+            return null;
+    }
+    return conv;
+});
 exports.Convert = Convert;

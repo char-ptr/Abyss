@@ -1,8 +1,8 @@
 import { Command, CommandArgument, CommandArgTypes} from "../../m/class";
 import { Client, Message, GuildMember, MessageEmbed } from "discord.js";
-import { Commands } from "../..";
 import { GetCommandFromS } from "../../m/func";
 import { Prefix } from "../../m/config";
+import { Commands } from "../../bot";
 
 
 
@@ -50,7 +50,7 @@ module.exports = class test extends Command
             emb.setTitle(c.Name)
             emb.setTimestamp(new Date())
             emb.setColor('#b0ffa8')
-            emb.addField('Usage',`\`\`\`css\n${Prefix}${c.Name} ${c.Args ? c.Args.map(v => v.Needed ? `<${v.Name}${v.Position.length > 1 ? `-${v.Position.length-1} : ${v.Type}` : ''}>` : `[${v.Name}${v.Position.length > 1 ? `-${v.Position.length-1}` : ''} : ${v.Type}]`) : ''}\`\`\`\n\`<> = needed, [] = not needed, -number = length of arg(words)\``)
+            emb.addField('Usage',`\`\`\`css\n${Prefix}${c.Name} ${c.Args ? c.Args.map(v => v.Needed ? `<${v.Name}${v.Position.length > 1 ? `-${ typeof v.Position === 'string' ? 'all' :  v.Position.length-1} : ${v.Type}` : ''}>` : `[${v.Name}${v.Position.length > 1 ? `-${ typeof v.Position === 'string' ? 'all' :  v.Position.length-1} : ${v.Type}` : ''} : ${v.Type}]`) : ''}\`\`\`\n\`<> = needed, [] = not needed, -number = length of arg(words), : type = arg type.\``)
             emb.addField('Permissions', c.Perms?.toArray().join(', ') ?? 'No permissions')
             emb.addField('Guild only', c.Guild ? 'Yes' : 'No')
             

@@ -68,6 +68,12 @@ class Command {
         this.Hidden = Data.Hidden
     }
 
+    /**
+     * 
+     * @param name The string of the argument you which to get.
+     * @param args The arguments passed into the function.
+     */
+
     protected GetArg = ( name : string , args : {name : string, value : CommandArgTypes}[]) : any => {
         if (!args) return 
         let filt = args.filter(v => v.name === name)[0]
@@ -75,8 +81,14 @@ class Command {
         return filt.value;
 
     }
-
-    run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ): Promise<{Worked : boolean, Error? : Error}> => {
+    /** 
+     * 
+     * @param message The message object.
+     * @param client The client object.
+     * @param args The arguments for this command.
+     * 
+    */
+    public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ): Promise<{Worked : boolean, Error? : Error}> => {
 
         return {Worked : false, Error : new Error('There is no run function!')}
     }
