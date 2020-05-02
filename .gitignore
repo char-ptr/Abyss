@@ -2,3 +2,4 @@
 .env
 Bot_Rewrite/
 node_modules/
+dist/
