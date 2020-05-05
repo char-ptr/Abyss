@@ -16,7 +16,9 @@ async function handleArg(Args : string[], Class : CommandArgument , message : Me
     else word = Args.filter( (v,i) => i < Class.Position.length ).join(' ')
     if(!word) return [false, 'Unable to find any arguments.']
     if(word.split(' ').length < (Array.isArray(Class.Position) ? Class.Position.length : 0) ) return [false,`Expected argument '${Class.Name}' @ position : ${word.split(' ').length+1} [after command]`];
-    if(Class.prefix) if ( !word.startsWith(Class.prefix) ) return [false, `Expected a prefix. What it should of looked like : ${Class.prefix}${word}`]
+    if(Class.prefix) if ( !word.startsWith(Class.prefix) ) return [false, `Expected a prefix. What it should of looked like : ${Class.prefix}${word}`]; else word = word.slice(Class.prefix.length)
+    console.log(word)
+    if(Class.same && word != Class.Name) return [false,`Expected the argument to be exactly the same as the argument name...`]
     if(Class.Perms) if (member.permissions.missing(Class.Perms,true) ) return [false, `You do not have the required perms to use this argument! Required perms : ${Class.Perms.toArray().join(' | ')}`]
     let conv = await Convert(word, Class.Type,message)
     if(! conv) return [false,`I was unable to convert "${word}" into typeof ${Class.Type}.`]

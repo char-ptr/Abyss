@@ -21,10 +21,11 @@ interface CommandData {
 interface CommandAData {
     Name        : string
     Type        : keyof CommandArgTypes
-    prefix?     : string
     Needed      : boolean
     Position    : number[]      |   string
-    Perms?       : Permissions  |   null
+    prefix?     : string
+    Perms?      : Permissions   |   null
+    same?       : boolean
 }
 
 class CommandArgument {
@@ -35,6 +36,7 @@ class CommandArgument {
     readonly prefix?    : string
     readonly Position   : number[]      |   string
     readonly Type       : keyof CommandArgTypes
+    readonly same?      : boolean
     constructor (Data   : CommandAData) {
 
         this.Name       = Data.Name
@@ -43,6 +45,7 @@ class CommandArgument {
         this.prefix     = Data.prefix   ?? ''
         this.Type       = Data.Type as keyof CommandArgTypes
         this.Position   = Data.Position
+        this.same       = Data.same
         
     }
 }
@@ -52,7 +55,7 @@ class Command {
     readonly Desc   : string
     readonly Alias? : string[]              |   null
     readonly Perms? : Permissions           |   null
-    readonly Args?  : CommandArgument[]    |   undefined
+    readonly Args?  : CommandArgument[]     |   undefined
     readonly Guild  : boolean
     readonly Owner  : boolean
     readonly Hidden : boolean

@@ -18,6 +18,7 @@ class CommandArgument {
         this.prefix = (_b = Data.prefix) !== null && _b !== void 0 ? _b : '';
         this.Type = Data.Type;
         this.Position = Data.Position;
+        this.same = Data.same;
     }
 }
 exports.CommandArgument = CommandArgument;

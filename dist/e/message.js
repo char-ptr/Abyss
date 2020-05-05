@@ -32,6 +32,11 @@ function handleArg(Args, Class, message) {
         if (Class.prefix)
             if (!word.startsWith(Class.prefix))
                 return [false, `Expected a prefix. What it should of looked like : ${Class.prefix}${word}`];
+            else
+                word = word.slice(Class.prefix.length);
+        console.log(word);
+        if (Class.same && word != Class.Name)
+            return [false, `Expected the argument to be exactly the same as the argument name...`];
         if (Class.Perms)
             if (member.permissions.missing(Class.Perms, true))
                 return [false, `You do not have the required perms to use this argument! Required perms : ${Class.Perms.toArray().join(' | ')}`];

@@ -67,8 +67,8 @@ module.exports = class test extends Command
             emb.setThumbnail(client.user!.displayAvatarURL({dynamic:true}))
             for (let folder of Commands.entries()) {
                 let arr = [...folder[1].keys()].filter(v => ! folder[1].get(v)?.Hidden).map(v => '• '+v)
-                console.log(arr.length)
-                emb.addField(folder[0],  arr.length <= 0 ? 'No commands!' : arr.join('\n') , emb.fields.length+1%3 != 0? true:false)
+                console.log(arr.length,emb.fields.length%3)
+                emb.addField(folder[0],  arr.length <= 0 ? 'No commands!' : arr.join('\n') , emb.fields.length%3 < 2? true:false)
 
             }
 
