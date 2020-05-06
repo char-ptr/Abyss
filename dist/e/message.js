@@ -21,10 +21,11 @@ function handleArg(Args, Class, message) {
     return __awaiter(this, void 0, void 0, function* () {
         let member = message.member;
         let word;
+        console.log(Args, Class.Position, Class.Position.length);
         if (Class.Position === 'all')
             word = Args.join(' ');
         else
-            word = Args.filter((v, i) => i < Class.Position.length).join(' ');
+            word = Args.filter((v, i) => i <= Class.Position[Class.Position.length - 1] && i >= Class.Position[0]).join(' ');
         if (!word)
             return [false, 'Unable to find any arguments.'];
         if (word.split(' ').length < (Array.isArray(Class.Position) ? Class.Position.length : 0))
@@ -34,7 +35,7 @@ function handleArg(Args, Class, message) {
                 return [false, `Expected a prefix. What it should of looked like : ${Class.prefix}${word}`];
             else
                 word = word.slice(Class.prefix.length);
-        console.log(word);
+        console.log(word, `wrd @ ${Class.Name}`);
         if (Class.same && word != Class.Name)
             return [false, `Expected the argument to be exactly the same as the argument name...`];
         if (Class.Perms)

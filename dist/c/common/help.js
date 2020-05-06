@@ -22,13 +22,23 @@ module.exports = class test extends class_1.Command {
             Guild: false,
             Owner: false,
             Hidden: false,
-            Args: [new class_1.CommandArgument({
+            Args: [
+                new class_1.CommandArgument({
                     Name: 'Command',
                     Needed: false,
                     Type: "str",
                     Perms: null,
                     Position: [0]
-                })]
+                }),
+                new class_1.CommandArgument({
+                    Name: 'src',
+                    Needed: false,
+                    Type: "str",
+                    Perms: null,
+                    Position: [1],
+                    same: true
+                }),
+            ]
         });
         this.run = (message, client, args) => __awaiter(this, void 0, void 0, function* () {
             var _a, _b;
@@ -40,13 +50,15 @@ module.exports = class test extends class_1.Command {
                     return { Worked: false, Error: new Error('Unable to find that command') };
                 let emb = new discord_js_1.MessageEmbed();
                 emb.setAuthor(message.author.username, message.author.displayAvatarURL({ dynamic: true }));
-                emb.setDescription(`Information about the command "${c.Name}"`);
+                emb.setDescription(c.Desc);
                 emb.setTitle(c.Name);
                 emb.setTimestamp(new Date());
                 emb.setColor('#b0ffa8');
-                emb.addField('Usage', `\`\`\`css\n${config_1.Prefix}${c.Name} ${c.Args ? c.Args.map(v => v.Needed ? `<${v.Name}${v.Position.length > 1 ? `-${typeof v.Position === 'string' ? 'all' : v.Position.length - 1} : ${v.Type}` : ''}>` : `[${v.Name}${v.Position.length > 1 ? `-${typeof v.Position === 'string' ? 'all' : v.Position.length - 1} : ${v.Type}` : ''} : ${v.Type}]`) : ''}\`\`\`\n\`<> = needed, [] = not needed, -number = length of arg(words), : type = arg type.\``);
+                emb.addField('Usage', `\`\`\`css\n${config_1.Prefix}${c.Name} ${c.Args ? c.Args.map(v => `${v.Needed ? '<' : '['}` + `${v.Type} "${v.Name}" @ ${typeof v.Position === 'string' ? 'All' : `${v.Position[0]}${v.Position.length > 1 ? `-${v.Position[v.Position.length - 1]}` : ''}`}` + `${v.Needed ? '>' : ']'}`).join(' ') : ''}\`\`\`\n\`<> = needed, [] != needed, @ = Arg length \``);
                 emb.addField('Permissions', (_b = (_a = c.Perms) === null || _a === void 0 ? void 0 : _a.toArray().join(', ')) !== null && _b !== void 0 ? _b : 'No permissions');
                 emb.addField('Guild only', c.Guild ? 'Yes' : 'No');
+                if (this.GetArg('src', args) && func_1.IsIdOwner(message.author.id))
+                    emb.addField('src', `\`\`\`ts\n${c.run.toString().slice(0, 1004).length >= 1003 ? c.run.toString().slice(0, 1004) + '\n...' : c.run.toString()}\n\`\`\``);
                 message.channel.send(emb);
             }
             else {

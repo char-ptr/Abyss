@@ -1,6 +1,6 @@
 import { Command, CommandArgument, CommandArgTypes} from "../../m/class";
 import { Client, Message, GuildMember, MessageEmbed } from "discord.js";
-import { GetCommandFromS } from "../../m/func";
+import { GetCommandFromS, IsIdOwner } from "../../m/func";
 import { Prefix } from "../../m/config";
 import { Commands } from "../../bot";
 
@@ -21,13 +21,23 @@ module.exports = class test extends Command
                 Guild : false,
                 Owner : false,
                 Hidden : false,
-                Args : [new CommandArgument({
-                    Name : 'Command',
-                    Needed : false,
-                    Type : "str",
-                    Perms : null,
-                    Position : [0]
-                })]
+                Args : [
+                    new CommandArgument({
+                        Name : 'Command',
+                        Needed : false,
+                        Type : "str",
+                        Perms : null,
+                        Position : [0]
+                    }),
+                    new CommandArgument({
+                        Name : 'src',
+                        Needed : false,
+                        Type : "str",
+                        Perms : null,
+                        Position : [1],
+                        same : true
+                    }),
+                ]
             }
         )
 
@@ -46,13 +56,14 @@ module.exports = class test extends Command
 
             let emb = new MessageEmbed()
             emb.setAuthor(message.author.username,message.author.displayAvatarURL({dynamic:true}))
-            emb.setDescription(`Information about the command "${c.Name}"`)
+            emb.setDescription(c.Desc)
             emb.setTitle(c.Name)
             emb.setTimestamp(new Date())
             emb.setColor('#b0ffa8')
-            emb.addField('Usage',`\`\`\`css\n${Prefix}${c.Name} ${c.Args ? c.Args.map(v => v.Needed ? `<${v.Name}${v.Position.length > 1 ? `-${ typeof v.Position === 'string' ? 'all' :  v.Position.length-1} : ${v.Type}` : ''}>` : `[${v.Name}${v.Position.length > 1 ? `-${ typeof v.Position === 'string' ? 'all' :  v.Position.length-1} : ${v.Type}` : ''} : ${v.Type}]`) : ''}\`\`\`\n\`<> = needed, [] = not needed, -number = length of arg(words), : type = arg type.\``)
+            emb.addField('Usage',`\`\`\`css\n${Prefix}${c.Name} ${c.Args ? c.Args.map(v => `${v.Needed ? '<' : '['}` + `${v.Type} "${v.Name}" @ ${typeof v.Position === 'string' ? 'All' : `${v.Position[0]}${v.Position.length > 1 ? `-${v.Position[v.Position.length-1]}` : ''}` }` + `${v.Needed ? '>' : ']'}`  ).join(' ') : ''}\`\`\`\n\`<> = needed, [] != needed, @ = Arg length \``)
             emb.addField('Permissions', c.Perms?.toArray().join(', ') ?? 'No permissions')
             emb.addField('Guild only', c.Guild ? 'Yes' : 'No')
+            if ( this.GetArg('src', args!) && IsIdOwner(message.author.id) ) emb.addField('src', `\`\`\`ts\n${c.run.toString().slice(0,1004).length >= 1003 ? c.run.toString().slice(0,1004) + '\n...' : c.run.toString()}\n\`\`\``)
             
             message.channel.send(emb)
 
