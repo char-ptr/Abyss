@@ -52,9 +52,19 @@ module.exports = class test extends Command
         
 
         if (this.GetArg('guild',args!)) {
-
+            let g = message.guild
             let emb = new MessageEmbed()
-            
+            emb.setTitle('Information on ' + g?.name)
+            emb.setThumbnail(g!.iconURL() ?? '')
+            emb.addField('cached roles', g?.roles.cache.map(v=>v.toString()).join(', ') ) 
+            emb.addField('cached members', g?.members.cache.filter(v=>!v.user.bot).size,true)
+            emb.addField('cached bots', g?.members.cache.filter(v=>v.user.bot).size,true)
+            emb.addField('cached channels', g?.channels.cache.size,true)
+            emb.addField('Verified?', g?.verified ? 'yes' : 'no',true)
+            emb.addField('Partnered?', g?.partnered ? 'yes' : 'no',true)
+            emb.addField('Boosts', g?.premiumSubscriptionCount,true)
+            emb.addField('Owner', client.users.resolve(g!.ownerID)?.toString())
+            message.channel.send(emb)
 
             return {Worked : true}
 
@@ -68,7 +78,7 @@ module.exports = class test extends Command
             emb.setThumbnail(mem.user.displayAvatarURL())
             emb.setColor(mem.displayHexColor)
             emb.setFooter('Requested by ' + message.member?.displayName)
-            emb.addField('Roles', mem.roles.cache.map(v=>v.toString()))
+            emb.addField('Roles', mem.roles.cache.map(v=>v.toString()).join(', ') )
             emb.addField('KeyPermissions', mem.permissions.toArray().map(v=> v.toLowerCase().split('_').map(g=>g[0].toUpperCase() + g.slice(1) ).join(' ') ).filter(v=> keyPerms.includes(v)).join(', '))
             emb.addField('Activities', mem.user.presence.activities.map((v, i)=> `[${i+1}] ${v.name} - ${v.state}`).join('\n'))
             emb.addField('Flags', mem.user.flags.toArray('').map(v=> v.toLowerCase().split('_').map(g=>g[0].toUpperCase() + g.slice(1) ).join(' ') ).join(', ') )
