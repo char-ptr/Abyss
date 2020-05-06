@@ -32,7 +32,8 @@ module.exports = class test extends Command
     
         let asset = this.GetArg('Asset',args!)
 
-        let r = await got(`https://assetgame.roblox.com/Asset/?id=${asset}`,)
+        let r = await got(`https://assetgame.roblox.com/Asset/?id=${asset}`,).catch( () => {return null} )
+        if (!r) return {Worked : false, Error : new Error('Unable to find Anything with that id...')}
         let body = r.body
         let splitt = body.split('\n')
         let newUrl
