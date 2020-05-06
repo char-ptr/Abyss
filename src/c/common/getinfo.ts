@@ -79,12 +79,13 @@ module.exports = class test extends Command
             emb.setColor(mem.displayHexColor)
             emb.setFooter('Requested by ' + message.member?.displayName)
             emb.addField('Roles', mem.roles.cache.map(v=>v.toString()).join(', ') )
-            emb.addField('KeyPermissions', mem.permissions.toArray().map(v=> v.toLowerCase().split('_').map(g=>g[0].toUpperCase() + g.slice(1) ).join(' ') ).filter(v=> keyPerms.includes(v)).join(', '))
-            emb.addField('Activities', mem.user.presence.activities.map((v, i)=> `[${i+1}] ${v.name} - ${v.state}`).join('\n'))
-            emb.addField('Flags', mem.user.flags.toArray('').map(v=> v.toLowerCase().split('_').map(g=>g[0].toUpperCase() + g.slice(1) ).join(' ') ).join(', ') )
+            emb.addField('KeyPermissions', mem.permissions.toArray().map(v=> v.toLowerCase().split('_').map(g=>g[0].toUpperCase() + g.slice(1) ).join(' ') ).filter(v=> keyPerms.includes(v)).join(', ') || 'None')
+            emb.addField('Activities', mem.user.presence.activities.map((v, i)=> `[${i+1}] ${v.name} - ${v.state}`).join('\n') || 'None')
+            emb.addField('Flags', mem.user.bot ? 'None' : mem.user.flags.toArray().map(v=> v.toLowerCase().split('_').map(g=>g[0].toUpperCase() + g.slice(1) ).join(' ') ).join(', ') || 'None')
             emb.addField('Current vc', mem.voice.channel ?? 'Not in a vc',true)
             emb.addField('id', mem.id,true)
             emb.addField('bot', mem.user.bot,true)
+            emb.addField('Status', Object.keys(mem.presence.clientStatus ?? {}).join(', ') ? `${mem.presence.status} - ${Object.keys(mem.presence.clientStatus!).join(', ')}` : mem.presence.status !== 'offline' ? 'Selfbot' : 'Offline.')
             message.channel.send(emb)
 
             return {Worked : true}
