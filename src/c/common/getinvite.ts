@@ -31,7 +31,7 @@ module.exports = class test extends Command
                         Needed : false,
                         Type : "str" as keyof CommandArgTypes,
                         Perms : null,
-                        Position : [1],
+                        Position : [0],
                         prefix : '-',
                         same:true
                     }),
