@@ -92,10 +92,11 @@ const GetMemberFromGuild = async (msg : Message | Guild, str : string) : Promise
     if (!str) return null
 
     let MorG = msg instanceof Message
+    if (MorG && str.toLowerCase() === 'me') return msg.member as GuildMember
     let guild = MorG ? (msg as Message).guild! : msg as Guild
     let could : GuildMember[] | [GuildMember] = []
     let ms = await guild.members.fetch()
-
+    
     for (let v of ms) {
         if (v[1].displayName.toLowerCase().match(str.toLowerCase()))    {could = [...could, v[1]]; continue;}
         if (v[0] === str)                                               {could = [...could, v[1]]; continue;}
