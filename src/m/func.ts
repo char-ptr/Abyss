@@ -82,6 +82,16 @@ export const OwnerToUserArray = async (client : Client) : Promise<User[]> => {
     } else process.exit(66)
 
 }
+
+export function sleep(milliseconds : number) {
+    let start = new Date().getTime();
+    for (let i = 0; i < 1e7; i++) {
+        if ((new Date().getTime() - start) > milliseconds){
+            break;
+        }
+    }
+}
+
 export function getrnd(min : number, max : number) {
     return Math.floor(Math.random() * (max - min) ) + min;
 }
@@ -94,8 +104,8 @@ export function getrnd(min : number, max : number) {
 const GetMemberFromGuild = async (msg : Message | Guild, str : string) : Promise<GuildMember | null> => {
 
     if (!str) return null
-
     let MorG = msg instanceof Message
+    if (MorG && (msg as Message).mentions.members?.first() ) return (msg as Message).mentions.members!.first() ?? null
     if (MorG && str.toLowerCase() === 'me') return msg.member as GuildMember
     let guild = MorG ? (msg as Message).guild! : msg as Guild
     let could : GuildMember[] | [GuildMember] = []
