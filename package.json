@@ -18,6 +18,7 @@
     "@types/ws": "^7.2.4"
   },
   "scripts": {
+	  "build": "npx tsc",
     "start": "node index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
