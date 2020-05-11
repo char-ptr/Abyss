@@ -1,7 +1,8 @@
-import { Client, Message, GuildMember, Guild } from "discord.js"
-import { Prefix } from "../m/config";
-import { GetCommandFromS, Convert, IsIdOwner } from "../m/func";
-import { CommandArgument, CommandArgTypes } from "../m/class";
+import {Client, Message} from "discord.js"
+import {Prefix} from "../m/config";
+import {Convert, GetCommandFromS, IsIdOwner} from "../m/func";
+import {CommandArgTypes, CommandArgument} from "../m/class";
+
 /**
  * 
  * @param Args The arguments (words after command) within the message.
@@ -12,13 +13,11 @@ async function handleArg(Args : string[], Class : CommandArgument , message : Me
     let member = message.member!
     let word : string
 
-    console.log(Args, Class.Position,Class.Position.length)
     if (Class.Position === 'all') word = Args.join(' ')
-    else word = Args.filter( (v,i) => i <= Class.Position[Class.Position.length-1] && i >= Class.Position[0] ).join(' ')
+    else word = Args.filter( (v,i) =>   Class.Position[Class.Position.length-1] >= i && i <= Class.Position[0] ).join(' ')
     if(!word) return [false, 'Unable to find any arguments.']
     if(word.split(' ').length < (Array.isArray(Class.Position) ? Class.Position.length : 0) ) return [false,`Expected argument '${Class.Name}' @ position : ${word.split(' ').length+1} [after command]`];
     if(Class.prefix) if ( !word.startsWith(Class.prefix) ) return [false, `Expected a prefix. What it should of looked like : ${Class.prefix}${word}`]; else word = word.slice(Class.prefix.length)
-    console.log(word, `wrd @ ${Class.Name}`)
     if(Class.same && word != Class.Name) return [false,`Expected the argument to be exactly the same as the argument name...`]
     if(Class.Perms) if (member.permissions.missing(Class.Perms,true) ) return [false, `You do not have the required perms to use this argument! Required perms : ${Class.Perms.toArray().join(' | ')}`]
     let conv = await Convert(word, Class.Type,message)
@@ -29,8 +28,6 @@ async function handleArg(Args : string[], Class : CommandArgument , message : Me
 }
 
 module.exports = async function run(client :Client, message : Message) : Promise<void> {
-
-    console.log('NEW MESSAGE!')
 
     if (message.content.indexOf(Prefix) !== 0) return;
     if (message.author.bot) return
