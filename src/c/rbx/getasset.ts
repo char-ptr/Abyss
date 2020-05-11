@@ -15,7 +15,7 @@ module.exports = class test extends Command
                 Desc : 'Gets a shirt or pants asset from roblox.com.',
                 Guild : false,
                 Owner : false,
-                Hidden : false,
+                Hidden : true,
                 Args : [new CommandArgument({
                     Name : 'Asset',
                     Needed : true,
