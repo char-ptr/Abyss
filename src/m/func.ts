@@ -82,6 +82,10 @@ export const OwnerToUserArray = async (client : Client) : Promise<User[]> => {
     } else process.exit(66)
 
 }
+export function getrnd(min : number, max : number) {
+    return Math.floor(Math.random() * (max - min) ) + min;
+}
+
 /**
  * 
  * @param msg The message object which initiated the search. This can also be a guild if.
