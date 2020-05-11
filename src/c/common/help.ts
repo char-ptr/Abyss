@@ -79,6 +79,7 @@ module.exports = class test extends Command
             for (let folder of Commands.entries()) {
                 let arr = [...folder[1].keys()].filter(v => ! folder[1].get(v)?.Hidden).map(v => '• '+v)
                 console.log(arr.length,emb.fields.length%3)
+                if (arr.length <= 0) continue;
                 emb.addField(folder[0],  arr.length <= 0 ? 'No commands!' : arr.join('\n') , emb.fields.length%3 < 2? true:false)
 
             }
