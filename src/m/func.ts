@@ -1,5 +1,5 @@
 import {  } from ".."
-import { Command, CommandArgTypes } from "./class"
+import {Command, CommandArgTypes, InflictedEffect, PlayerData, Weapon, Operators} from "./class"
 import { Guild, GuildMember, Message, User, Client} from "discord.js"
 import { Owner } from "./config"
 import { Commands } from "../bot"
@@ -39,10 +39,68 @@ export const IsIdOwner = (s: string) : boolean => {
 
 }
 
+export function RunEffect(effect: InflictedEffect,Curr :PlayerData,Opp:PlayerData) : undefined | {Edited : keyof PlayerData, To:any,As:PlayerData,Eff:InflictedEffect} {
+    console.log((`Running effect!\nInflicter : ${Curr.Id}\nInflicted:${Opp.Id}\nTarget:${effect.doing.Target}`))
+    switch (effect.doing.Target) {
+
+        case "Inflicted":
+            if (typeof Curr[effect.doing.ValueOf] === 'function') {
+                (Curr[effect.doing.ValueOf] as Function)(effect.doing.Value)
+            }
+            else {
+
+                // @ts-ignore
+                Curr[effect.doing.ValueOf] = ChooseOperator(effect.doing.Opr,Curr[effect.doing.ValueOf],effect.doing.Value)
+
+            }
+            return {Edited: `${[effect.doing.ValueOf].toString()}` as keyof PlayerData, To:Curr[effect.doing.ValueOf],As:Curr,Eff:effect}
+        break;
+        case "Inflicter":
+            if (typeof Opp[effect.doing.ValueOf] === 'function') {
+                (Opp[effect.doing.ValueOf] as Function)(effect.doing.Value)
+            }
+            else {
+
+                // @ts-ignore
+                Opp[effect.doing.ValueOf] = ChooseOperator(effect.doing.Opr,Opp[effect.doing.ValueOf],effect.doing.Value)
+
+            }
+            return {Edited: effect.doing.ValueOf as keyof PlayerData, To:Opp[effect.doing.ValueOf],As:Opp,Eff:effect}
+        break;
+    }
+    return
+
+}
+export function ChooseOperator(opr : keyof Operators, v1:any,v2:any) {
+    switch (opr) {
+        case "=":
+            return v2
+        break;
+        case "+":
+            return v1+v2
+        break;
+        case "*":
+            return v1*v2
+        break;
+        case "-":
+            return v1-v2
+        break;
+        case "/":
+            return v1/v2
+        break;
+        default:
+            return v2
+        break;
+    }
+
+
+}
+
 /**
  * 
  * @param client The discord client.
  * @description Don't use this anymore, Cba to fix at the moment.
+ * @todo fix.
  */
 export const OwnerToUserArray = async (client : Client) : Promise<User[]> => {
 
@@ -83,6 +141,12 @@ export const OwnerToUserArray = async (client : Client) : Promise<User[]> => {
 
 }
 
+/**
+ *
+ * @param milliseconds ms
+ * @todo Fix, so that it actually waits the correct amount of time.
+ * 
+ */
 export function sleep(milliseconds : number) {
     let start = new Date().getTime();
     for (let i = 0; i < 1e7; i++) {

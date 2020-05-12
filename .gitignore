@@ -7,3 +7,8 @@ package-lock.json
 /dist/
 /.vscode/
 /.idea/
+/dist/c/
+/dist/e/
+/dist/m/
+/dist/bot.js
+/dist/index.js

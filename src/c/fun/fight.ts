@@ -1,27 +1,10 @@
-import {Command, CommandArgument, CommandArgTypes, Inventory, Weapon} from "../../m/class";
+import {Command, CommandArgument, CommandArgTypes, Inventory, Weapon, PlayerData, Effect} from "../../m/class";
 import {Client, Message, GuildMember, Guild, Collection, MessageEmbed, TextChannel} from "discord.js";
 import {getrnd, sleep} from "../../m/func";
 
 const yphrases = /(yeah|ok|okay|yes|ya|sure)/gmi
 const nphrases = /(nah|nope|no)/gmi
 let Cl : Client
-class PlayerData {
-
-	readonly Id : string
-	public Inv : Inventory
-	public Health : number
-	readonly Channel : TextChannel
-	public CritCh : number = 13
-	public DamageBoot : number = 0
-	public skipped : number = 0
-	constructor( {id,inv,health,channel} : {id:string,inv:Inventory,health:number,channel:TextChannel} ) {
-		this.Id = id
-		this.Inv = inv
-		this.Health = health
-		this.Channel = channel
-	}
-
-}
 
 async function choose(Data : PlayerData, messg : Message) : Promise<Weapon | void> {
 	let emb = new MessageEmbed()
@@ -29,7 +12,7 @@ async function choose(Data : PlayerData, messg : Message) : Promise<Weapon | voi
 	emb.setColor("AQUA")
 	emb.setDescription(`Okay, ${ (Cl.users.resolve(Data.Id) )!.toString() }, Its your turn. What weapon would you like to use:`)
 	for (let ind in Data.Inv.Equipped!) {
-		emb.addField('\u200B',`${Number(ind)+1}: ${Data.Inv.Equipped![ind].Name} ⚔${Data.Inv.Equipped![ind].Damage.modified} ~ ${Data.Inv.Equipped![ind].HitChance}%`)
+		emb.addField(Number(ind)+1,`Name:${Data.Inv.Equipped![ind].Name}\nDamage:${Data.Inv.Equipped![ind].Damage.modified}\nHitChance:${Data.Inv.Equipped![ind].HitChance}%\nEffect(s):\n${Data.Inv.Equipped![ind].Effect ? `\n${Data.Inv.Equipped![ind].Effect!.name}:\n\tRounds:${Data.Inv.Equipped![ind].Effect!.rounds}\n\tTarget:${Data.Inv.Equipped![ind].Effect!.to.Target}\n\t${Data.Inv.Equipped![ind].Effect!.to.Target}'s${Data.Inv.Equipped![ind].Effect!.to.ValueOf} ${Data.Inv.Equipped![ind].Effect!.to.Opr} ${Data.Inv.Equipped![ind].Effect!.vPerRound}` : 'None'}`,true)
 	}
 	await messg.edit(emb)
 	let msg = (await Data.Channel.awaitMessages((m : Message) => m.member!.id == Data.Id && ! isNaN( +m.content ) && +m.content -1 in Data.Inv.Equipped!, {dispose:true,max:1,time:15e3})).first()
@@ -68,23 +51,51 @@ async function main(currData : PlayerData,oppData : PlayerData, messg : Message)
 	let Chance  = getrnd(0,100)
 	let gotHit  : boolean = false
 	let gotcrit : boolean = false
-	if (currData.CritCh  >= Chance) {currData.DamageBoot += (30 /100) * weapon.Damage.modified;gotcrit=true}
+	if (currData.CritCh  >= Chance) {currData.addBoostDamage('Crit', (30 /100) * weapon.Damage.modified);gotcrit=true}
 	if (weapon.HitChance >= Chance) gotHit=true
 
-	if(gotHit) oppData.Health -= (weapon.Damage.modified + currData.DamageBoot)
-
+	let PreData = {curr : currData,opp:oppData}
+	let Damage = (weapon.Damage.modified + currData.DamageBoost)
+	if(gotHit) {oppData.Health -= Damage; if (weapon.Effect) {
+		let Inf = weapon.Effect.ConvToIE(oppData)
+		oppData.AddEffect(Inf)
+	}}
+	let EffectEditedData = [...currData.RunAllEffects(currData,oppData), ...oppData.RunAllEffects(oppData,currData)]
+	console.log(EffectEditedData)
 	let emb = new MessageEmbed()
 	emb.setColor("RED")
 	emb.setTitle(`${currData.Channel.guild.member(currData.Id)!.displayName}'s turn.`)
-	if(gotHit)  emb.setDescription(`
-	${currData.Channel.guild.member(currData.Id)!.displayName} Has hit ${oppData.Channel.guild.member(oppData.Id)!.displayName} for ${(weapon.Damage.modified + currData.DamageBoot)} (${gotcrit ?'with' : 'without'} Critical) damage.
-	${oppData.Channel.guild.member(oppData.Id)!.displayName}'s Health is now at ${oppData.Health}
+	emb.setDescription(`
+	${gotHit ? 
+		(`${currData.Channel.guild.member(currData.Id)!.displayName} Has hit ${oppData.Channel.guild.member(oppData.Id)!.displayName} for ${(weapon.Damage.modified + currData.DamageBoost)} (${gotcrit ?'with' : 'without'} Critical) damage.
+		${oppData.Channel.guild.member(oppData.Id)!.displayName}'s Health is now at ${oppData.Health}`)
+	: 
+		`${currData.Channel.guild.member(currData.Id)!.displayName} Has missed with their attempt to hit ${oppData.Channel.guild.member(oppData.Id)!.displayName}`}
+	${'-'.repeat(7)}Calculations${'-'.repeat(7)}
+	
+	Damage : ${weapon.Damage.base} 
+	${weapon.Damage.base !== weapon.Damage.modified ? `+ ${weapon.Damage.modified - weapon.Damage.base} (Modifcations)` : ''}
+	${currData.DamageBoost > 0 ? `+ ${currData.DamageBoost} ( ${currData.GetBoostLog().map(v=> `+${v.by} : ${v.name}`).join(', ')} )` : ''}
+	
+	Health :
+	${currData.Channel.guild.member(currData.Id)!.displayName} : ${PreData.curr.Health}
+	
+	${oppData.Channel.guild.member(oppData.Id)!.displayName} : ${PreData.opp.Health}
+	- ${Damage} (Damage)
+	
+	Effects:
+		${currData.Channel.guild.member(currData.Id)!.displayName}:
+		${EffectEditedData.filter(v=>v.Eff.inflicting.Id === currData.Id).map(v=>`${v.Edited} ${v.Eff.doing.Opr} ${v.Eff.doing.Value}`).join('\n\t')}
+		${oppData.Channel.guild.member(oppData.Id)!.displayName}:
+		${EffectEditedData.filter(v => v.Eff.inflicting.Id === oppData.Id).map(v => `${v.Edited} ${v.Eff.doing.Opr} ${v.Eff.doing.Value}`).join('\n\t')}
 	`)
-	else emb.setDescription(`${currData.Channel.guild.member(currData.Id)!.displayName} Has missed with their attempt to hit ${oppData.Channel.guild.member(oppData.Id)!.displayName}`)
 	emb.setImage(Cl.users.resolve(currData.Id)!.displayAvatarURL({dynamic:true,size:64}))
+	currData.removeBoostDamage('Crit')
 	await messg.edit(emb)
-	sleep(4e3)
-	return await main(oppData,currData,messg)
+	currData.RoundPass(); oppData.RoundPass()
+	return setTimeout(async () => {
+		await main(oppData, currData, messg)
+	}, 6e3);
 }
 
 module.exports = class test extends Command
@@ -142,10 +153,23 @@ module.exports = class test extends Command
 		emb.setColor("GREEN")
 		await embmess.edit(emb)
 		Cl = client
-		let meminv      = new Inventory({Weapons : [new Weapon({Name:'stick',Damage:5,Droppable:false, HitChance : 98})] })
-		let oppinv      = new Inventory({Weapons : [new Weapon({Name:'stick',Damage:5,Droppable:false, HitChance : 98})] })
-		let StarterData = new PlayerData( {id:message.member!.id, inv : meminv,health:10, channel : message.channel as TextChannel } )
-		let OppData     = new PlayerData( {id:opp.id, inv : oppinv,health:10, channel : message.channel as TextChannel} )
+		let meminv      = new Inventory({Weapons : [new Weapon({
+				Name:'stick',
+				Damage:5,
+				Droppable:false,
+				HitChance : 98,
+				Cost : {Buy :1, Sell : 1}}
+				)] })
+		let oppinv      = new Inventory({Weapons : [new Weapon({
+				Name:'stick',
+				Damage:5,
+				Droppable:false,
+				HitChance : 98,
+				Effect : new Effect( { to : {Target:'Inflicted',ValueOf:"Health",Opr:'-'}, rounds:1,name:'Test',vPerRound:1 } ),
+				Cost : {Buy :1, Sell : 1}}
+			)] })
+		let StarterData = new PlayerData( {id:message.member!.id, inv : meminv,health:100, channel : message.channel as TextChannel } )
+		let OppData     = new PlayerData( {id:opp.id, inv : oppinv,health:100, channel : message.channel as TextChannel} )
 
 		await main(StarterData,OppData,embmess)
 

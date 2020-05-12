@@ -1,4 +1,5 @@
-import {Client, GuildMember, Message, Permissions} from 'discord.js'
+import {Client, GuildMember, Message, Permissions, TextChannel} from 'discord.js'
+import {RunEffect} from "./func";
 
 interface CommandArgTypes {
     member? : GuildMember,
@@ -7,6 +8,17 @@ interface CommandArgTypes {
     str?    : String,
 
 }
+export interface Operators {
+
+    '+':string,
+    '-':string,
+    '*':string,
+    '/':string
+    '=':string,
+
+
+}
+
 
 interface CommandData {
     Name   : string
@@ -28,13 +40,23 @@ interface CommandAData {
     same?       : boolean
 }
 
+interface WeaponEffectTarget {
+
+    Inflicted    : PlayerData
+    Inflicter     : PlayerData
+
+
+}
+
 interface WeaponData {
 
     Name        : string
     Damage      : number
     Droppable   : boolean
     DropRate?   : number
-    HitChance : number
+    Effect?     : Effect
+    HitChance   : number
+    Cost        : {Sell:number,Buy:number}
 
 }
 
@@ -43,13 +65,116 @@ interface InventoryData {
     Weapons     : Weapon[]
 }
 
+interface EffectData {
+    name:string,
+    rounds:number,
+    to:{ Target : keyof WeaponEffectTarget, ValueOf : keyof PlayerData, Opr:keyof Operators},
+    vPerRound:any
+}
+interface InflictedEffectData {
+    inflicting : PlayerData,
+    doing : { Target : keyof WeaponEffectTarget, ValueOf : keyof PlayerData, Value:any,Opr:keyof Operators},
+    roundsRemaining : number
+}
+
+export class PlayerData {
+
+    readonly Id         : string
+    readonly Channel    : TextChannel
+    public Inv          : Inventory
+    public Health       : number
+    public CritCh       : number    = 83
+    public DamageBoost  : number    = 0
+    public skipped      : number    = 0
+    private DamBooLog   : {name : string, by : number}[] = []
+    private Effects     : InflictedEffect[] = []
+    constructor( {id,inv,health,channel} : {id:string,inv:Inventory,health:number,channel:TextChannel} ) {
+        this.Id     = id
+        this.Inv    = inv
+        this.Health = health
+        this.Channel= channel
+    }
+    public GetEffects = (on? : PlayerData) => {return on ? this.Effects.filter(v=>v.inflicting === on) : this.Effects}
+    public RunAllEffects = (curr:PlayerData,opp:PlayerData) => {
+        let did : {Edited : keyof PlayerData, To:any,As:PlayerData,Eff:InflictedEffect}[] = []
+        for (let effect of this.Effects) {
+            let out = effect.run(curr.Id === this.Id ? curr : opp,opp.Id !== this.Id ? opp : curr)
+            if(out) did = [...did,out]
+        }
+        return did
+    }
+    public AddEffect = (eff :InflictedEffect) => {this.Effects=[...this.Effects,eff]}
+    public RemoveEffect = (eff:InflictedEffect) => {this.Effects.splice(this.Effects.indexOf(eff),1)}
+    public RoundPass = () => {
+
+
+        for (let effect of this.Effects) {
+            effect.RemoveRound()
+            if (effect.roundsRemaining <=0) this.Effects.splice(this.Effects.indexOf(effect),1)
+        }
+    }
+
+    public addBoostDamage = (why:string,by:number) => {
+
+        this.DamageBoost += by
+        this.DamBooLog = [...this.DamBooLog,{name:why,by:by}]
+
+    }
+    public removeBoostDamage = (why:string) => {
+
+        let dat = this.DamBooLog.filter(v=>v.name===why)[0]
+        if(!dat) {console.error('Unable to find that modifier'); return}
+        this.DamageBoost -= dat.by
+        this.DamBooLog.splice(this.DamBooLog.indexOf(dat),1)
+
+    }
+    public GetBoostLog = () => {return this.DamBooLog}
+
+}
+
+export class InflictedEffect {
+
+    readonly inflicting : PlayerData
+    readonly doing : { Target : keyof WeaponEffectTarget, ValueOf : keyof PlayerData, Value:any,Opr : keyof Operators}
+    public roundsRemaining : number
+    constructor(Data : InflictedEffectData) {
+        this.inflicting = Data.inflicting
+        this.doing = Data.doing
+        this.roundsRemaining = Data.roundsRemaining
+    }
+    public run = (curr:PlayerData,opp:PlayerData) => {
+        return (RunEffect(this, curr,opp) )
+    }
+    public RemoveRound = () => {return this.roundsRemaining--}
+
+}
+export class Effect {
+    readonly name:string
+    public rounds:number
+    readonly to:{ Target : keyof WeaponEffectTarget, ValueOf : keyof PlayerData, Opr:keyof Operators}
+    readonly vPerRound:any
+    constructor(data : EffectData) {
+        this.name = data.name
+        this.rounds = data.rounds
+        this.to = data.to
+        this.vPerRound = data.vPerRound
+    }
+    public ConvToIE = (Inflicted : PlayerData) => {
+        return new InflictedEffect({roundsRemaining:this.rounds,doing:{Target:this.to.Target,Value:this.vPerRound,ValueOf:this.to.ValueOf, Opr:this.to.Opr},inflicting:Inflicted})
+    }
+}
+
+
 export class Weapon {
 
     public Damage       : {base : number, modified : number}
     public DropRate?    : number | undefined
+    public Effect?      : Effect | undefined
+    public Cost         : {Sell:number,Buy:number}
     readonly Droppable  : boolean
     readonly Name       : string
     readonly HitChance  : number
+
 
     constructor(Data    : WeaponData) {
 
@@ -58,6 +183,8 @@ export class Weapon {
         this.Droppable  = Data.Droppable
         this.DropRate   = Data.DropRate
         this.HitChance  = Data.HitChance
+        this.Effect     = Data.Effect
+        this.Cost       = {Sell : Data.Cost.Sell ?? (Math.floor((30/Data.Cost.Buy)*100))??1, Buy : Data.Cost.Buy?? (Math.floor( (130/Data.Cost.Sell)*100 ))??1 }
 
     }
 }
