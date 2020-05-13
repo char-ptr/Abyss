@@ -1,14 +1,13 @@
-
 .env
-Bot_Rewrite/
+# Not needed.
 node_modules/
+# make sure that any compiled code doesn't get commited
 dist/
+# everything.
 package-lock.json
+# making sure that it actually gets ignored.
 /dist/
+
+# programs etc
 /.vscode/
 /.idea/
-/dist/c/
-/dist/e/
-/dist/m/
-/dist/bot.js
-/dist/index.js
