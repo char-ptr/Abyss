@@ -1,5 +1,5 @@
 import {Client, GuildMember, Message, Permissions, TextChannel} from 'discord.js'
-import {RunEffect} from "./func";
+import {getrnd, RunEffect} from "./func";
 
 interface CommandArgTypes {
     member? : GuildMember,
@@ -47,7 +47,6 @@ interface WeaponEffectTarget {
 
 
 }
-
 interface WeaponData {
 
     Name        : string
@@ -164,6 +163,33 @@ export class Effect {
     }
 }
 
+export class Xor {
+
+    readonly key = Math.round(getrnd(-100,100));
+    constructor(k?:number) {
+        this.key = k??this.key
+    }
+
+    public Encrypt = (str:string) => {
+        let result = '';
+        for (let s of str) {
+            result += String.fromCharCode( this.key ^ s.charCodeAt(0) );
+
+        }
+        return Buffer.from(result,'ascii').toString('hex')
+
+    }
+
+    public Decrypt = (hex: string) => {
+        let hash = Buffer.from(hex,'hex').toString('ascii')
+        let result = '';
+        for (let s of hash) {
+            result += String.fromCharCode( this.key ^ s.charCodeAt(0) );
+        }
+        return result;
+    }
+
+}
 
 export class Weapon {
 
