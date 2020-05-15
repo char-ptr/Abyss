@@ -3,7 +3,7 @@ This is a typescript discord bot made using [Discord.js](https://discord.js.org/
 
 ---
 
-###status
+### status
 
 Currently the bot is no where near done, there is plenty of things i want to work on and add.
 
