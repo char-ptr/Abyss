@@ -5,8 +5,8 @@ import { Command } from "./m/class"
 config( { path: './.env' } )
 
 const Commands : Map<string,Map<string,Command>> = new Map()
-const CFolders = readdirSync(`${__dirname}\\c`)
-const EFiles = readdirSync(`${__dirname}\\e`)
+const CFolders = readdirSync(`${__dirname}/c`)
+const EFiles = readdirSync(`${__dirname}/e`)
 const client = new Client({partials : ['MESSAGE']})
 client.login(process.env.DISCORD_TOKEN)
 

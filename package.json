@@ -2,7 +2,7 @@
   "name": "botrewrite",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "dependencies": {
     "@types/dotenv": "^8.2.0",
     "@types/got": "^9.6.10",
