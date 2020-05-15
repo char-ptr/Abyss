@@ -55,7 +55,7 @@ module.exports = class test extends Command
 				Error: new Error('There was an issue contacting the api, try again later?')
 			}
 			if (!stored) {stored = jsn;stored.data = [stored.data]} else { if (stored.data.indexOf([jsn.data]) < 0) stored.data = [...stored.data, [...jsn.data]]; else console.log('Already indexed..')}
-			stored.meta = jsn.meta
+			stored.meta += jsn.meta
 			setTimeout( () => {cannew = true},5e3 )
 			setTimeout( () => {stored.data.splice(0,1)},15e3 )
 		}
@@ -65,7 +65,7 @@ module.exports = class test extends Command
 		if(meta.error) {console.error(meta.error); return {Worked : false,Error:new Error('There was an issue contacting the api, try again later?')}}
 		let dat = getFile(jsn)
 
-		await message.channel.send( new MessageEmbed().setImage(dat.url) )
+		await message.channel.send( new MessageEmbed().setImage(dat.url).setDescription(`There is currently a ${ Number(( 1 / (24*(stored.data.length as number)-1)).toFixed(2))*10 }% chance of a duplicate`) )
 		return {Worked : true}
 	}
 
