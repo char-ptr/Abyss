@@ -13,7 +13,7 @@ client.login(process.env.DISCORD_TOKEN)
 for (let v of EFiles) {
 
     if (!v.endsWith('.js')) {console.error('NONE JS file in EVENT directory'); continue}
-    let pull : Function = require(`${__dirname}\\e\\${v}`)
+    let pull : Function = require(`${__dirname}/e/${v}`)
     if (!pull) {console.error(`Command '${v}' DOES NOT have a run function!`); continue}
     let s = v.slice(0,-3) as keyof ClientEvents
     if (typeof s != 'string') break
@@ -23,12 +23,12 @@ for (let v of EFiles) {
 //Commands
 for (let v of CFolders) {
     Commands.set(v, new Map())
-    let stat = statSync(`${__dirname}\\c\\${v}`)
+    let stat = statSync(`${__dirname}/c/${v}`)
     if (!stat.isDirectory()) {console.error(`found a NONE DIRECTORY in COMMANDS FOLDER. '${v}' `); continue}
-    let CFiles = readdirSync(`${__dirname}\\c\\${v}`)
+    let CFiles = readdirSync(`${__dirname}/c/${v}`)
     for (let v2 of CFiles) {
 
-        let dir = `${__dirname}\\c\\${v}\\${v2}`
+        let dir = `${__dirname}/c/${v}/${v2}`
         if (!v2.endsWith('.js')) {console.error(`NONE JS file in COMMAND directory / ${v2}`); continue}
         let pull = require(dir)
         let pulled = new pull()
