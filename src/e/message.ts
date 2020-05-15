@@ -36,8 +36,13 @@ module.exports = async function run(client :Client, message : Message) : Promise
     const comm = args.shift()!.toLowerCase();
 
     let cmd = GetCommandFromS(comm)
-
     if (! cmd) {message.channel.send('Unable to get that command!'); return}
+    switch(message.channel.type) {
+
+        case "text":
+            if (cmd.nsfw && !message.channel.nsfw) {message.channel.send('You must be in a nsfw channel to use this command.'); return}
+
+    }
     if (cmd.Owner) if(! IsIdOwner(message.author.id) ) {message.channel.send(`Sorry, but the command you tried to execute requires you to be an "Owner"`);return} 
     let Hargs : {name : string, value : CommandArgTypes}[] = []
     if (cmd.Args) {

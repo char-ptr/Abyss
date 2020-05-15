@@ -29,6 +29,7 @@ interface CommandData {
     Guild  : boolean
     Owner  : boolean
     Hidden : boolean
+    nsfw?  : boolean
 }
 interface CommandAData {
     Name        : string
@@ -274,11 +275,13 @@ class Command {
     readonly Alias? : string[]              |   null
     readonly Perms? : Permissions           |   null
     readonly Args?  : CommandArgument[]     |   undefined
+    readonly nsfw?   : boolean               | undefined
     readonly Guild  : boolean
     readonly Owner  : boolean
     readonly Hidden : boolean
 
     constructor(Data: CommandData) {
+        this.nsfw   = Data.nsfw
         this.Name   = Data.Name  
         this.Desc   = Data.Desc  
         this.Alias  = Data.Alias ?? null
