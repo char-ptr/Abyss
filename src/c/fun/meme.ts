@@ -24,7 +24,7 @@ module.exports = class test extends Command
 	public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ) => {
 
 		let jsn = JSON.parse( (await got('https://www.reddit.com/r/dankmemes/random.json') ).body )[0].data.children[0].data
-		console.log(jsn)
+		//console.log(jsn)
 		let a = false
 		let emb = new MessageEmbed()
 		if (!jsn.is_video) emb.setImage(jsn.url)
