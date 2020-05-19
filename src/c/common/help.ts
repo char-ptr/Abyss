@@ -3,6 +3,7 @@ import { Client, Message, GuildMember, MessageEmbed } from "discord.js";
 import { GetCommandFromS, IsIdOwner } from "../../m/func";
 import { Prefix } from "../../m/config";
 import { Commands } from "../../bot";
+import {GetError} from "../../m/error";
 
 
 
@@ -65,7 +66,7 @@ module.exports = class test extends Command
             emb.addField('Guild only', c.Guild ? 'Yes' : 'No')
             if ( this.GetArg('src', args!) && IsIdOwner(message.author.id) ) emb.addField('src', `\`\`\`ts\n${c.run.toString().slice(0,1004).length >= 1003 ? c.run.toString().slice(0,1004) + '\n...' : c.run.toString()}\n\`\`\``)
             
-            message.channel.send(emb)
+            message.channel.send(emb).catch( () => message.channel.send( GetError('NO_EMBED_PERMS')) )
 
         } else {
 
@@ -84,7 +85,7 @@ module.exports = class test extends Command
 
             }
 
-            message.channel.send(emb)
+            message.channel.send(emb).catch( () => message.channel.send( GetError('NO_EMBED_PERMS')) )
 
         }
 

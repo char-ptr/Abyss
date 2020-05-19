@@ -1,5 +1,6 @@
 import { Command, CommandArgument, CommandArgTypes} from "../../m/class";
 import { Client, Message, GuildMember, Guild, Collection, MessageEmbed } from "discord.js";
+import {GetError} from "../../m/error";
 
 module.exports = class test extends Command 
 {
@@ -45,7 +46,7 @@ module.exports = class test extends Command
         emb.setTitle('wow totally not self promo')
         emb.addField('github', '[click](https://github.com/pozm/TS-Bot)')
         emb.setFooter('made by pozm. :)')
-        message.channel.send(emb)
+        message.channel.send(emb).catch( () => message.channel.send( GetError('NO_EMBED_PERMS')) )
         return {Worked : true}
     }
 

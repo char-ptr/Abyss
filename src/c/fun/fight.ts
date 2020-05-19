@@ -1,6 +1,7 @@
 import {Command, CommandArgument, CommandArgTypes, Inventory, Weapon, PlayerData, Effect} from "../../m/class";
 import {Client, Message, GuildMember, Guild, Collection, MessageEmbed, TextChannel} from "discord.js";
 import {getrnd, sleep} from "../../m/func";
+import {GetError} from "../../m/error";
 
 const yphrases = /(yeah|ok|okay|yes|ya|sure)/gmi
 const nphrases = /(nah|nope|no)/gmi
@@ -138,7 +139,7 @@ module.exports = class test extends Command
 		emb.setColor("ORANGE")
 		emb.setDescription(`Awaiting ${opp.displayName}'s response....`)
 		emb.setFooter(`Started by ${message.member!.displayName}.`,message.author.displayAvatarURL({dynamic:true,size:32}))
-		let embmess = await message.channel.send(emb)
+		let embmess = await message.channel.send(emb).catch( () => message.channel.send( GetError('NO_EMBED_PERMS')) )
 
 		//await message.channel.send(`${opp.toString()} Would you like to fight ${message.member?.displayName}?`)
 		let msg = (await message.channel.awaitMessages( m => ( m.content.match(yphrases) || m.content.match(nphrases) ) && m.author.id === opp.id, {dispose:true,max:1,time:15e3}) ).first()

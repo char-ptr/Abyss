@@ -1,6 +1,7 @@
 import { Command, CommandArgument, CommandArgTypes} from "../../m/class";
 import { Client, Message, GuildMember, MessageEmbed, MessageAttachment } from "discord.js";
 import got from "got";
+import {GetError} from "../../m/error";
 
 module.exports = class test extends Command
 {
@@ -32,7 +33,7 @@ module.exports = class test extends Command
 		emb.setTitle(jsn.title)
 		emb.setDescription('This meme was taken from *r/dankmemes*')
 		emb.setURL('https://www.reddit.com'+jsn.permalink)
-		message.channel.send(emb)
+		message.channel.send(emb).catch( () => message.channel.send( GetError('NO_EMBED_PERMS')) )
 		return {Worked : true}
 	}
 
