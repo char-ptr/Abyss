@@ -22,16 +22,13 @@ module.exports = class test extends Command
                         Needed : false,
                         Type : "str" as keyof CommandArgTypes,
                         Perms : null,
-                        Position : 'all'
                     }),
                     new CommandArgument({
                         Name : 'o',
                         Needed : false,
                         Type : "str" as keyof CommandArgTypes,
                         Perms : null,
-                        Position : [0],
                         prefix : '-',
-                        same:true
                     }),
                 ]
             }

@@ -23,24 +23,18 @@ module.exports = class test extends Command
                         Needed : false,
                         Type : "str" as keyof CommandArgTypes,
                         Perms : null,
-                        Position : [0],
-                        same : true
                     }),
                     new CommandArgument({
                         Name : 'person',
                         Needed : false,
                         Type : "str" as keyof CommandArgTypes,
                         Perms : null,
-                        Position : [0],
-                        same : true
                     }),
                     new CommandArgument({
                         Name : 'member',
                         Needed : false,
                         Type : "member" as keyof CommandArgTypes,
                         Perms : null,
-                        Position : [1],
-                        same : false
                     }),
                 ]
             }

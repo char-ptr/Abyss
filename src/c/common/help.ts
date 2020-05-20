@@ -25,18 +25,16 @@ module.exports = class test extends Command
                 Args : [
                     new CommandArgument({
                         Name : 'Command',
+                        AltNames : ['cmd', 'command'],
                         Needed : false,
                         Type : "str",
                         Perms : null,
-                        Position : [0]
                     }),
                     new CommandArgument({
                         Name : 'src',
                         Needed : false,
                         Type : "bool",
                         Perms : null,
-                        Position : [1],
-                        same : true
                     }),
                 ]
             }
@@ -46,9 +44,6 @@ module.exports = class test extends Command
 
     public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ) => {
         let cmd : string | undefined = this.GetArg('Command',args!)
-
-        console.log(cmd)
-        console.log(args)
 
         if(cmd) {
 
@@ -80,7 +75,7 @@ module.exports = class test extends Command
             emb.setThumbnail(client.user!.displayAvatarURL({dynamic:true}))
             for (let folder of Commands.entries()) {
                 let arr = [...folder[1].keys()].filter(v => ! folder[1].get(v)?.Hidden).map(v => '• '+v)
-                console.log(arr.length,emb.fields.length%3)
+                //console.log(arr.length,emb.fields.length%3)
                 if (arr.length <= 0) continue;
                 emb.addField(folder[0],  arr.length <= 0 ? 'No commands!' : arr.join('\n') , emb.fields.length%3 < 2? true:false)
 

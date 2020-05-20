@@ -33,12 +33,11 @@ interface CommandData {
 }
 interface CommandAData {
     Name        : string
+    AltNames?   : string[]
     Type        : keyof CommandArgTypes
     Needed      : boolean
-    Position    : number[]      |   string
     prefix?     : string
     Perms?      : Permissions   |   null
-    same?       : boolean
 }
 
 interface WeaponEffectTarget {
@@ -250,21 +249,19 @@ export class Inventory {
 class CommandArgument {
 
     readonly Name       : string
+    readonly AltNames?   : string[]
     readonly Needed     : boolean
     readonly Perms?     : Permissions   |   null
     readonly prefix?    : string
-    readonly Position   : number[]      |   string
     readonly Type       : keyof CommandArgTypes
-    readonly same?      : boolean
     constructor (Data   : CommandAData) {
 
         this.Name       = Data.Name
+        this.AltNames   = Data.AltNames
         this.Needed     = Data.Needed
         this.Perms      = Data.Perms    ?? null
         this.prefix     = Data.prefix   ?? ''
         this.Type       = Data.Type as keyof CommandArgTypes
-        this.Position   = Data.Position
-        this.same       = Data.same
         
     }
 }

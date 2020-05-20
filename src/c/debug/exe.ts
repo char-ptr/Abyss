@@ -28,7 +28,6 @@ module.exports = class test extends Command
                     Needed : true,
                     Type : "str" as keyof CommandArgTypes,
                     Perms : null,
-                    Position : 'all'
                 })]
             }
         )

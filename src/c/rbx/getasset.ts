@@ -21,7 +21,6 @@ module.exports = class test extends Command
                     Needed : true,
                     Type : "num" as keyof CommandArgTypes,
                     Perms : null,
-                    Position : [0]
                 })]
             }
         )

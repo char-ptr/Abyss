@@ -120,8 +120,6 @@ module.exports = class test extends Command
 							Needed : true,
 							Type : "member" as keyof CommandArgTypes,
 							Perms : null,
-							Position : [0],
-							same : false
 						}),
 					]
 			}
