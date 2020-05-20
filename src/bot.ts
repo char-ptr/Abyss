@@ -33,9 +33,16 @@ for (let v of CFolders) {
         let dir = `${__dirname}/c/${v}/${v2}`
         if (!v2.endsWith('.js')) {console.error(`NONE JS file in COMMAND directory / ${v2}`); continue}
         let pull = require(dir)
-        let pulled = new pull()
+        let pulled : Command = new pull()
         
-        Commands.get(v)!.set(v2.slice(0,-3),pulled)
+        Commands.get(v)!.set(pulled.Name,pulled)
+        if (pulled.Alias) {
+            for (let v2 of pulled.Alias) {
+
+                Commands.get(v)!.set(v2,pulled)
+
+            }
+        }
 
     } 
 
