@@ -8,9 +8,13 @@ let ArgRex = /-+(\S*.)([^-]*)?/gm
 
 
 function GetArgumentFromString(s : string, args : CommandArgument[]) {
-
-    return args.filter(v=> v.Name === s)[0]
-
+    let valu
+    for (let i in args) {
+        let v = args[i]
+        if (v.AltNames) if (v.AltNames?.indexOf(s) >=0) valu = v
+        else if (v.Name === s) valu = v
+    }
+    return valu
 }
 
 /**
@@ -28,22 +32,19 @@ async function handleArg(Args : string[], cmd : Command , message : Message) : P
 
         let Arg = Args[Argi] // get arg
         let argName = Arg.split(' ')[0] ?? Arg // get the name of the argument
-        let ParArgName = argName.replace(/-*/, '') // parse it, so remove the - / -- at the beginning
+        let ParArgName = argName.replace(/-*/, '').trim() // parse it, so remove the - / -- at the beginning
         let Class = GetArgumentFromString(ParArgName,cmd.Args!) //See if theres a argument with that name in the command.
         if (!Class) continue // if not continue the search.
         let args = Arg.split(' ');args.splice(0, 1) // get the argument value.
         let JoinedArgs = args.join(' ') //Join it
         let bool = argName.startsWith('--') // Check if its a bool value.
 
-
-        console.log(argName, args, JoinedArgs, bool)
-
         if (!args && !bool) CollArgs = {...CollArgs, [ParArgName] : { Completed : false, Msg: 'Bad argument, got nothing.'} }
         if (Class.Perms && member) if(member.permissions.missing(Class.Perms, true)) CollArgs = {...CollArgs, [ParArgName] : { Completed : false, Msg: `You do not have the required perms to use this argument! Required perms : ${Class.Perms.toArray().join(' | ')}`} }
         let conv = await Convert(JoinedArgs, Class.Type, message)
         if (!conv && !bool) CollArgs = {...CollArgs, [ParArgName] : { Completed : false, Msg: `I was unable to convert "${JoinedArgs}" into typeof ${Class.Type}.`} }
         if (bool) conv = true as CommandArgTypes
-        CollArgs = {...CollArgs, [ParArgName] : {Complete : true,Value : conv}}
+        CollArgs = {...CollArgs, [Class.Name] : {Complete : true,Value : conv}}
     }
     return CollArgs
 }
@@ -68,7 +69,6 @@ module.exports = async function run(client :Client, message : Message) : Promise
     let Hargs : {name : string, value : CommandArgTypes}[] = []
     if (cmd.Args) {
         let matcc = message.content.match(ArgRex) ? message.content.match(ArgRex)!.map(v=>v.trim()) : null
-        console.log(matcc, cmd.Args.length)
         if (!(cmd.Args.length <= 0)) {
             let transargs : object = {}
             for (let argC of cmd.Args) {
@@ -79,9 +79,7 @@ module.exports = async function run(client :Client, message : Message) : Promise
 
             if (matcc) {
                 let out = await handleArg(matcc, cmd, message)
-                console.log(out, 'out')
                 for (let argss of Object.keys(out)) {
-                    console.log(argss)
                     // @ts-ignore
                     if (!out[argss].Complete ) continue;
                     if ( argss in transargs ) {
