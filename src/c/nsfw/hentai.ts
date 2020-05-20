@@ -34,6 +34,7 @@ module.exports = class test extends Command
 				Owner : false,
 				Hidden: true,
 				nsfw  : true,
+				Alias : ['hen']
 			}
 		)
 
@@ -66,7 +67,7 @@ module.exports = class test extends Command
 		if(meta.error) {console.error(meta.error); return {Worked : false,Error:new Error('There was an issue contacting the api, try again later?')}}
 		let dat = getFile(jsn)
 
-		await message.channel.send( new MessageEmbed().setImage(dat.url).setDescription(`There is currently a ${ Number(( 1 / (24*(stored.data.length as number)-1)).toFixed(2))*10 }% chance of a duplicate`) ).catch( () => message.channel.send( GetError('NO_EMBED_PERMS')) )
+		await message.channel.send( new MessageEmbed().setImage(dat.url).setDescription(`There is currently a ${ Number( ( 1 / (24*(stored.data.length as number)) ).toFixed(2))*10 }% chance of a duplicate`) ).catch( () => message.channel.send( GetError('NO_EMBED_PERMS')) )
 		return {Worked : true}
 	}
 
