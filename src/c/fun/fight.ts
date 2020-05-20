@@ -108,7 +108,7 @@ module.exports = class test extends Command
 		super
 		(
 			{
-				Name : 'get info',
+				Name : 'fight',
 				Desc : 'Gets information about either a guild or a person.',
 				Guild : true,
 				Owner : false,

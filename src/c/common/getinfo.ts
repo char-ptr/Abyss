@@ -12,7 +12,7 @@ module.exports = class test extends Command
         super
         ( 
             { 
-                Name : 'get info',
+                Name : 'getinfo',
                 Desc : 'Gets information about either a guild or a person.',
                 Guild : false,
                 Owner : false,

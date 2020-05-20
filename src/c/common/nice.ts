@@ -11,7 +11,7 @@ module.exports = class test extends Command
         super
         ( 
             { 
-                Name : 'getinvite',
+                Name : 'nice',
                 Desc : 'Gets an invitation to a guild (server)',
                 Guild : false,
                 Owner : false,
