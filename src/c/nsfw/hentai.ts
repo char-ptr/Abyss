@@ -41,12 +41,15 @@ module.exports = class test extends Command
 	}
 
 	public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ) => {
+		return {Worked : false, Error : new Error('Command is currently broken, may be fixed in the future')}
 		console.log(!cannew? 'Data is stored in cache so it\'s being used' : 'Data isn\'t stored in cache so going to request and cache.')
 		if (cannew) {
 			cannew = false
 			let index = getrnd(0, 2000)
 			console.log('sending request', index)
-			let res = (await got(`https://hr.hanime.tv/api/v8/community_uploads?channel_name__in[]=nsfw-general&__offset=${index}&__order=created_at,DESC&loc=https://hanime.tv`)).body
+			let res = (await got(`https://hr.hanime.tv/api/v8/community_uploads?channel_name__in[]=nsfw-general&__offset=${index}&__order=created_at,DESC&loc=https://hanime.tv`).catch(e=>{console.log(e);return e}) )
+			console.log(res)
+			res = res.body
 			if (!res) return {
 				Worked: false,
 				Error: new Error('There was an issue contacting the api, try again later?')
