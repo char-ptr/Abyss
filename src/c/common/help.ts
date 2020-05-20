@@ -33,7 +33,7 @@ module.exports = class test extends Command
                     new CommandArgument({
                         Name : 'src',
                         Needed : false,
-                        Type : "str",
+                        Type : "bool",
                         Perms : null,
                         Position : [1],
                         same : true
@@ -48,6 +48,7 @@ module.exports = class test extends Command
         let cmd : string | undefined = this.GetArg('Command',args!)
 
         console.log(cmd)
+        console.log(args)
 
         if(cmd) {
 
@@ -61,7 +62,7 @@ module.exports = class test extends Command
             emb.setTitle(c.Name)
             emb.setTimestamp(new Date())
             emb.setColor('#b0ffa8')
-            emb.addField('Usage',`\`\`\`css\n${Prefix}${c.Name} ${c.Args ? c.Args.map(v => `${v.Needed ? '<' : '['}` + `${v.Type} "${v.Name}" @ ${typeof v.Position === 'string' ? 'All' : `${v.Position[0]}${v.Position.length > 1 ? `-${v.Position[v.Position.length-1]}` : ''}` }` + `${v.Needed ? '>' : ']'}`  ).join(' ') : ''}\`\`\`\n\`<> = needed, [] != needed, @ = Arg length \``)
+            emb.addField('Usage',`\`\`\`css\n${Prefix}${c.Name} ${c.Args ? c.Args.map(v => `-${v.Type ==='bool'? '-':''}${v.Name}${!v.Needed?'?':''}${v.Type !== 'bool'? ' '+v.Type : ''}` ).join(' ') : ''}\`\`\`\n\`-- = true?, ? = optional\``)
             emb.addField('Permissions', c.Perms?.toArray().join(', ') ?? 'No permissions')
             emb.addField('Guild only', c.Guild ? 'Yes' : 'No')
             if ( this.GetArg('src', args!) && IsIdOwner(message.author.id) ) emb.addField('src', `\`\`\`ts\n${c.run.toString().slice(0,1004).length >= 1003 ? c.run.toString().slice(0,1004) + '\n...' : c.run.toString()}\n\`\`\``)
