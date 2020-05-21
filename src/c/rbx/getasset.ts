@@ -18,6 +18,7 @@ module.exports = class test extends Command
                 Hidden : true,
                 Args : [new CommandArgument({
                     Name : 'Asset',
+                    AltNames : ['id'],
                     Needed : true,
                     Type : "num" as keyof CommandArgTypes,
                     Perms : null,

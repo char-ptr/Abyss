@@ -76,7 +76,6 @@ module.exports = async function run(client :Client, message : Message) : Promise
                 transargs = {...transargs,[argC.Name] : {Needed : argC.Needed, value : null}}
 
             }
-
             if (matcc) {
                 let out = await handleArg(matcc, cmd, message)
                 for (let argss of Object.keys(out)) {
@@ -94,7 +93,7 @@ module.exports = async function run(client :Client, message : Message) : Promise
 
                 // @ts-ignore
                 let v = transargs[i]
-                if (v.Needed && !v.value) {message.channel.send(v.Msg + GetError('BAD_ARG')); return }
+                if (v.Needed && !v.value) {message.channel.send(v.Msg??'' + GetError('BAD_ARG')); return }
                 Hargs = [...Hargs,{name : i,value : v.value as CommandArgTypes}]
             }
         }
