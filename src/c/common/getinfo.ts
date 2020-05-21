@@ -21,13 +21,13 @@ module.exports = class test extends Command
                     [new CommandArgument({
                         Name : 'guild',
                         Needed : false,
-                        Type : "str" as keyof CommandArgTypes,
+                        Type : "bool" as keyof CommandArgTypes,
                         Perms : null,
                     }),
                     new CommandArgument({
                         Name : 'person',
                         Needed : false,
-                        Type : "str" as keyof CommandArgTypes,
+                        Type : "bool" as keyof CommandArgTypes,
                         Perms : null,
                     }),
                     new CommandArgument({
