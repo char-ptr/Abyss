@@ -11,8 +11,8 @@ function GetArgumentFromString(s : string, args : CommandArgument[]) {
     let valu
     for (let i in args) {
         let v = args[i]
-        if (v.AltNames) if (v.AltNames?.indexOf(s) >=0) valu = v
-        else if (v.Name === s) valu = v
+        if (v.AltNames) if (v.AltNames?.indexOf(s) >=0) valu = v;
+        if (v.Name === s) valu = v
     }
     return valu
 }
@@ -81,7 +81,7 @@ module.exports = async function run(client :Client, message : Message) : Promise
                 let out = await handleArg(matcc, cmd, message)
                 for (let argss of Object.keys(out)) {
                     // @ts-ignore
-                    if (!out[argss].Complete ) continue;
+                    if (!out[argss].Complete )continue;
                     if ( argss in transargs ) {
                         // @ts-ignore
                         transargs[argss] = {Needed : transargs[argss].Needed,value : out[argss].Value as CommandArgTypes, Msg : out[argss].Msg}
@@ -94,7 +94,7 @@ module.exports = async function run(client :Client, message : Message) : Promise
 
                 // @ts-ignore
                 let v = transargs[i]
-                if (v.Needed && !v.value) {message.channel.send(v.Msg); return }
+                if (v.Needed && !v.value) {message.channel.send(v.Msg + GetError('BAD_ARG')); return }
                 Hargs = [...Hargs,{name : i,value : v.value as CommandArgTypes}]
             }
         }
