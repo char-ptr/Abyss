@@ -16,4 +16,4 @@ after that is done you may configurate the settings to be as you wish, they are 
 
 ---
 
-This project is licensed under the terms of the gpl-3.0 license.
+This project is licensed under the terms of the MIT license.
