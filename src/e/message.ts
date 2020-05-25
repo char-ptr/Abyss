@@ -23,9 +23,8 @@ function GetArgumentFromString(s : string, args : CommandArgument[]) {
  * @param Class The class of the argument.
  * @param message The message object which initiated the event.
  */
-async function handleArg(Args : string[], cmd : Command , message : Message) : Promise<object>  {
+async function handleArg(Args : string[], cmd : Command , message : Message) : Promise<{ [unknown : string] : {Complete : boolean, Value : CommandArgTypes, Msg? : string} }>  {
     let member = message.member
-    if(!Args) return [false,'No argument']
     let CollArgs = {}
 
     for (let Argi in Args) {
@@ -70,7 +69,7 @@ module.exports = async function run(client :Client, message : Message) : Promise
     if (cmd.Args) {
         let matcc = message.content.match(ArgRex) ? message.content.match(ArgRex)!.map(v=>v.trim()) : null
         if (!(cmd.Args.length <= 0)) {
-            let transargs : object = {}
+            let transargs : { [unknown : string] : {Needed : boolean, value : unknown, Msg? : unknown} } = {}
             for (let argC of cmd.Args) {
 
                 transargs = {...transargs,[argC.Name] : {Needed : argC.Needed, value : null}}
@@ -78,20 +77,21 @@ module.exports = async function run(client :Client, message : Message) : Promise
             }
             if (matcc) {
                 let out = await handleArg(matcc, cmd, message)
-                for (let argss of Object.keys(out)) {
-                    // @ts-ignore
-                    if (!out[argss].Complete )continue;
-                    if ( argss in transargs ) {
-                        // @ts-ignore
-                        transargs[argss] = {Needed : transargs[argss].Needed,value : out[argss].Value as CommandArgTypes, Msg : out[argss].Msg}
+                for (let argssi in Object.keys(out)) {
+                    let argss = Object.values(out)[argssi]
+                    let name = Object.keys(out)[argssi]
+                    if (!argss.Complete )continue;
+                    let index = Object.keys(transargs).indexOf(name)
+                    if ( name in transargs ) {
+                        let val = transargs[Object.keys(transargs)[index]]
+                        transargs[Object.keys(transargs)[index]] = {Needed : val.Needed,value : argss.Value as CommandArgTypes, Msg : argss.Msg}
 
                     }
 
                 }
             }
             for (let i of Object.keys(transargs) ) {
-
-                // @ts-ignore
+                if (!transargs.hasOwnProperty(i)) return
                 let v = transargs[i]
                 if (v.Needed && !v.value) {message.channel.send(v.Msg??'' + GetError('BAD_ARG')); return }
                 Hargs = [...Hargs,{name : i,value : v.value as CommandArgTypes}]
