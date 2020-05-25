@@ -45,7 +45,7 @@ module.exports = class test extends Command
     public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ) => {
         
         let kickm = (this.GetArg('person',args!) as GuildMember )
-        kickm.send(`You have been kicked from ${message.guild!.name} for the reason of ${this.GetArg('reason',args!) ?? 'No reason.'}`)
+        if  (! this.GetArg('silent',args!)) kickm.send(`You have been kicked from ${message.guild!.name} for the reason of ${this.GetArg('reason',args!) ?? 'No reason.'}`)
         kickm.kick(this.GetArg('reason',args!) ?? 'No reason.')
             .then( (v) => message.channel.send(`Successfully kicked ${v.displayName} with reason of ${this.GetArg('reason',args!) ?? 'No reason.'}`))
             .catch(() => message.channel.send('I do not have the required permissions to kick this user.'))
