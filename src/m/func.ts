@@ -100,7 +100,6 @@ export function ChooseOperator(opr : keyof Operators, v1:any,v2:any) {
  * 
  * @param client The discord client.
  * @description Don't use this anymore, Cba to fix at the moment.
- * @todo fix.
  */
 export const OwnerToUserArray = async (client : Client) : Promise<User[]> => {
 
@@ -119,7 +118,7 @@ export const OwnerToUserArray = async (client : Client) : Promise<User[]> => {
 
             console.log(v,Owner)
 
-            let uu = await client.shard!.broadcastEval(`console.log(${v.toString()});this.users.cache.get(${v.toString()}) ? this.users.cache.get(${v.toString()}) : this.users.fetch(${v.toString()}).catch(e => console.log("Unable to find the owners on the shard ", this.shard.id))`)
+            let uu = (await client.shard!.broadcastEval(`this.users.fetch(${Owner}).catch( () => {return false} )`)).filter(v => v instanceof User)
 
             if (!uu) continue
 
