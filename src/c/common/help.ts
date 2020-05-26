@@ -22,6 +22,7 @@ module.exports = class test extends Command
                 Guild : false,
                 Owner : false,
                 Hidden : false,
+                Alias : ['?'],
                 Args : [
                     new CommandArgument({
                         Name : 'Command',
