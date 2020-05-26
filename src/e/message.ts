@@ -93,7 +93,7 @@ module.exports = async function run(client :Client, message : Message) : Promise
             for (let i of Object.keys(transargs) ) {
                 if (!transargs.hasOwnProperty(i)) return
                 let v = transargs[i]
-                if (v.Needed && !v.value) {message.channel.send(v.Msg??'' + GetError('BAD_ARG')); return }
+                if (v.Needed && !v.value) {message.channel.send(v.Msg??'' + GetError('BAD_ARG')); (GetCommandFromS('help') as Command).run(message,client,[{name:'Command',value:cmd.Name as CommandArgTypes}]) ; return }
                 Hargs = [...Hargs,{name : i,value : v.value as CommandArgTypes}]
             }
         }
