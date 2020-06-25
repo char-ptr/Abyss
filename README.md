@@ -1,4 +1,4 @@
-#Abyss
+# Abyss
 This is a project being currently made by only me. This project is made in typescript, and compiles into javascript. This project also heavily relies on [discord.js](https://discord.js.org)
 
 ---
