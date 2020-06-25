@@ -16,7 +16,7 @@ after that is done you may configurate the settings to be as you wish, they are 
 
 ---
 
-###Things i plan to add
+### Things i plan to add
 
 - website to configure server settings with - will probably use express
 
