@@ -1,11 +1,11 @@
-# Bot-Typescript
-This is a typescript discord bot made using [Discord.js](https://discord.js.org/#/)
+#Abyss
+This is a project being currently made by only me. This project is made in typescript, and compiles into javascript. This project also heavily relies on [discord.js](https://discord.js.org)
 
 ---
 
 ### status
 
-Currently the bot is no where near done, there is plenty of things i want to work on and add.
+Currently the bot is in an early stage of development with things which are yet to come.
 
 ---
 ### installation
@@ -13,6 +13,12 @@ If you wish to use this in this buggy state you will have to download it, then r
 Once you've downloaded all the dependancies you will have to compile the typescript to javascript, you can do that by running the command "npx tsc" while being in this folder.
 
 after that is done you may configurate the settings to be as you wish, they are in the src/m/config.ts file. 
+
+---
+
+###Things i plan to add
+
+- website to configure server settings with - will probably use express
 
 ---
 
