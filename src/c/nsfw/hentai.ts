@@ -1,5 +1,5 @@
-import { Command, CommandArgument, CommandArgTypes} from "../../m/class";
-import { Client, Message, GuildMember, MessageEmbed, MessageAttachment } from "discord.js";
+import {Command, CommandArgTypes} from "../../m/class";
+import {Client, Message, MessageEmbed} from "discord.js";
 import got from "got";
 import {getrnd} from "../../m/func";
 import {GetError} from "../../m/error";
@@ -33,7 +33,7 @@ module.exports = class test extends Command
 				Guild : false,
 				Owner : false,
 				Hidden: true,
-				nsfw  : true,
+				Nsfw  : true,
 				Alias : ['hen']
 			}
 		)

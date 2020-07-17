@@ -1,8 +1,8 @@
-import {  } from ".."
-import {Command, CommandArgTypes, InflictedEffect, PlayerData, Weapon, Operators} from "./class"
-import { Guild, GuildMember, Message, User, Client} from "discord.js"
-import { Owner } from "./config"
-import { Commands } from "../bot"
+import {Command, CommandArgTypes, InflictedEffect, Operators, PlayerData} from "./class"
+import {Client, Guild, GuildMember, Message, User} from "discord.js"
+import {Owner} from "./config"
+import {Commands} from "../bot"
+
 /**
  * 
  * @param v The string which you would like to try and find a command with.
@@ -177,7 +177,7 @@ const GetMemberFromGuild = async (msg : Message | Guild, str : string) : Promise
     for (let v of ms) {
         if (v[1].displayName.toLowerCase().match(str.toLowerCase()))    {could = [...could, v[1]]; continue;}
         if (v[0] === str)                                               {could = [...could, v[1]]; continue;}
-        if (v[1].user.username.toLowerCase().match(str.toLowerCase()))  {could = [...could, v[1]]; continue;}
+        if (v[1].user.username.toLowerCase().match(str.toLowerCase()))  {could = [...could, v[1]]; }
     }
     if (!could) return null
     if (could.length <= 0) return null
@@ -185,7 +185,7 @@ const GetMemberFromGuild = async (msg : Message | Guild, str : string) : Promise
 
         if (msg instanceof Guild) return could[0]
 
-        await msg.channel.send(`Sorry for interupting the command, but i have multiple results for the string "${str}", could you prehaps tell me which one you ment out of these:\n${could.map( (v,i) => `${i+1}:${v.displayName}${v.nickname ? ` \`(${v.user.username})\`` : ''}` ).join('\n')} `)
+        await msg.channel.send(`Sorry for interrupting the command, but i have multiple results for the string "${str}", could you perhaps tell me which one you meant out of these:\n${could.map( (v,i) => `${i+1}:${v.displayName}${v.nickname ? ` \`(${v.user.username})\`` : ''}` ).join('\n')} `)
         let coll =  await msg.channel.awaitMessages( m => m.member.id == msg.author.id && ! isNaN( +m.content ) && +m.content -1 in could, {max : 1, time: 30*1000})
         if (coll.size <= 0) return null
         let n = +coll.first()!.content-1

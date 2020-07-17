@@ -1,6 +1,12 @@
-import { Command, CommandArgument, CommandArgTypes} from "../../m/class";
-import { Client, Message, GuildMember, Guild, Collection, Permissions } from "discord.js";
+import {Command, CommandArgTypes, CommandArgument} from "../../m/class";
+import {Client, Message, Permissions} from "discord.js";
 
+/**
+ *
+ * Auto generated command file.
+ *
+ *
+ */
 
 module.exports = class test extends Command 
 {
@@ -33,9 +39,10 @@ module.exports = class test extends Command
     public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ) => {
         
         let banm = (this.GetArg('id',args!) as number )
+        console.log(banm.toString())
         message.guild!.members.ban(banm.toString())
             .then( () => message.channel.send(` <@${banm}> Has been successfully banned.`) )
-            .catch( () => {message.channel.send(`There was an issue with banning <@${banm}>, Are you sure you entered the right id?`);  return {Worked : false, Error : new Error('Unable to find that id.')}} )
+            .catch( (e) => {message.channel.send(`There was an issue with banning <@${banm}>, Are you sure you entered the right id?`); console.error(e) ;  return {Worked : false, Error : new Error('Unable to find that id.')}} )
 
         return {Worked : true}
     }

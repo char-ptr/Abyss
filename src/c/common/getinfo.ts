@@ -1,5 +1,5 @@
-import { Command, CommandArgument, CommandArgTypes} from "../../m/class";
-import { Client, Message, GuildMember, Guild, Collection, MessageEmbed } from "discord.js";
+import {Command, CommandArgTypes, CommandArgument} from "../../m/class";
+import {Client, GuildMember, Message, MessageEmbed} from "discord.js";
 
 const keyPerms = ['Kick Members','Ban Members', 'Administrator','Manage Guild','View Audit Log','Mention Everyone']
 
@@ -26,6 +26,7 @@ module.exports = class test extends Command
                     }),
                     new CommandArgument({
                         Name : 'person',
+                        AltNames : ['user'],
                         Needed : false,
                         Type : "bool" as keyof CommandArgTypes,
                         Perms : null,

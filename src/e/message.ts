@@ -19,6 +19,7 @@ function GetArgumentFromString(s : string, args : CommandArgument[]) {
 
 /**
  *
+ * @description Used to handle the arguments which are passed into the command.
  * @param Args The arguments (words after command) within the message.
  * @param Class The class of the argument.
  * @param message The message object which initiated the event.
@@ -48,35 +49,65 @@ async function handleArg(Args : string[], cmd : Command , message : Message) : P
     return CollArgs
 }
 
+// Ran on a new message
+
 module.exports = async function run(client :Client, message : Message) : Promise<void> {
 
-    if (message.content.indexOf(Prefix) !== 0) return;
-    if (message.author.bot) return
-    const args = message.content.slice(Prefix.length).trim().split(/ +/g);
-    if (!args) return
-    const comm = args.shift()!.toLowerCase();
+    // Getting the arguments passed into the command.
 
-    let cmd = GetCommandFromS(comm)
-    if (! cmd) {message.channel.send('Unable to get that command!'); return}
-    switch(message.channel.type) {
+    if (message.content.indexOf(Prefix) !== 0) return; // checks if the first character is the prefix
+    if (message.author.bot) return // disregards the message if the message was from a bot.
+    const args = message.content.slice(Prefix.length).trim().split(/ +/g); //splits the message content where ever a space was.
+    if (!args) return // disregard if no args
+
+    // Getting command object
+
+    const comm = args.shift()!.toLowerCase(); // get the command name.
+    if (!comm || comm === '') return;
+    let cmd = GetCommandFromS(comm) // Get the command object from the command name
+    if (! cmd) {message.channel.send('Unable to get that command!'); return} // disregard if unable to find the command object.
+
+    // Command checks based on channel types.
+
+    switch(message.channel.type) { // do different shit based on the channel type.
 
         case "text":
-            if (cmd.nsfw && !message.channel.nsfw) {message.channel.send('You must be in a nsfw channel to use this command.'); return}
+            if (cmd.Nsfw && !message.channel.nsfw) {message.channel.send('You must be in a nsfw channel to use this command.'); return}
 
     }
-    if (cmd.Owner) if(! IsIdOwner(message.author.id) ) {message.channel.send(`Sorry, but the command you tried to execute requires you to be an "Owner"`);return}
-    let Hargs : {name : string, value : CommandArgTypes}[] = []
-    if (cmd.Args) {
-        let matcc = message.content.match(ArgRex) ? message.content.match(ArgRex)!.map(v=>v.trim()) : null
-        if (!(cmd.Args.length <= 0)) {
-            let transargs : { [unknown : string] : {Needed : boolean, value : unknown, Msg? : unknown} } = {}
-            for (let argC of cmd.Args) {
+    if (cmd.Owner) if(! IsIdOwner(message.author.id) ) {message.channel.send(`Sorry, but the command you tried to execute requires you to be an "Owner"`);return} // disregard if the command is an owner and the message author isn't an owner.
 
-                transargs = {...transargs,[argC.Name] : {Needed : argC.Needed, value : null}}
+    // Beginning of argument handling
+
+    let Hargs : {name : string, value : CommandArgTypes}[] = [] // currently stored arguemnts
+    if (cmd.Args) { // check if the command requires an args
+        let matcc = message.content.match(ArgRex) ? // check if the message matches the argument regex
+            message.content.match(ArgRex)!.map(v=>v.trim()) : // us so map it an trim it.
+            null // else its null.
+        if (!(cmd.Args.length <= 0)) { // another check to see if arguments
+
+            let transargs : { // arg format.
+                [unknown : string] : {
+                    Needed : boolean,
+                    value : unknown,
+                    Msg? : unknown
+                }
+            } = {}
+            for (let argC of cmd.Args) { // for each arg run the following code
+
+                transargs =
+                    {
+                        ...transargs,
+                        [argC.Name] :
+                            {
+                                Needed : argC.Needed,
+                                value : null
+                            }
+                    }
 
             }
             if (matcc) {
-                let out = await handleArg(matcc, cmd, message)
+                let out = await handleArg(matcc, cmd, message) // get the command argument response
                 for (let argssi in Object.keys(out)) {
                     let argss = Object.values(out)[argssi]
                     let name = Object.keys(out)[argssi]
@@ -93,11 +124,32 @@ module.exports = async function run(client :Client, message : Message) : Promise
             for (let i of Object.keys(transargs) ) {
                 if (!transargs.hasOwnProperty(i)) return
                 let v = transargs[i]
-                if (v.Needed && !v.value) {message.channel.send(v.Msg??'' + GetError('BAD_ARG')); (GetCommandFromS('help') as Command).run(message,client,[{name:'Command',value:cmd.Name as CommandArgTypes}]) ; return }
-                Hargs = [...Hargs,{name : i,value : v.value as CommandArgTypes}]
+                if (v.Needed && !v.value)
+                {
+                    message.channel.send(v.Msg??'' + GetError('BAD_ARG'));
+                    (GetCommandFromS('help') as Command)
+                        .run(
+                            message,
+                            client,
+                            [{
+                                name:'Command',
+                                value:cmd.Name as CommandArgTypes
+                            }]
+                        ) ;
+                    return
+                }
+                Hargs =
+                    [
+                        ...Hargs,
+                        {
+                            name : i,
+                            value : v.value as CommandArgTypes
+                        }
+                    ]
             }
         }
     }
+
     let out = await cmd.run(message,client,Hargs)
     if (!out.Worked && out.Error) {message.channel.send(out.Error.message)}
 }

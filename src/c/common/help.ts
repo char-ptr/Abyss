@@ -1,14 +1,12 @@
-import { Command, CommandArgument, CommandArgTypes} from "../../m/class";
-import { Client, Message, GuildMember, MessageEmbed } from "discord.js";
-import { GetCommandFromS, IsIdOwner } from "../../m/func";
-import { Prefix } from "../../m/config";
-import { Commands } from "../../bot";
+import {Command, CommandArgTypes, CommandArgument} from "../../m/class";
+import {Client, Message, MessageEmbed} from "discord.js";
+import {GetCommandFromS, IsIdOwner} from "../../m/func";
+import {Prefix} from "../../m/config";
+import {Commands} from "../../bot";
 import {GetError} from "../../m/error";
 
 
-
-
-module.exports = class test extends Command 
+module.exports = class test extends Command
 {
 
     constructor(  ) 
@@ -78,7 +76,7 @@ module.exports = class test extends Command
                 let arr = [...folder[1].keys()].filter(v => ! folder[1].get(v)?.Hidden).map(v => '• '+v)
                 //console.log(arr.length,emb.fields.length%3)
                 if (arr.length <= 0) continue;
-                emb.addField(folder[0],  arr.length <= 0 ? 'No commands!' : arr.join('\n') , emb.fields.length%3 < 2? true:false)
+                emb.addField(folder[0],  arr.length <= 0 ? 'No commands!' : arr.join('\n') , emb.fields.length%3 < 2)
 
             }
 

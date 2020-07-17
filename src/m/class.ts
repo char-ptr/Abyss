@@ -1,26 +1,30 @@
 import {Client, GuildMember, Message, Permissions, TextChannel} from 'discord.js'
 import {getrnd, RunEffect} from "./func";
 
-interface CommandArgTypes {
+
+// interfaces
+
+
+interface CommandArgTypes { // the different types of command argument types.
     member? : GuildMember,
     bool?   : Boolean,
     num?    : Number,
     str?    : String,
 
 }
-export interface Operators {
+export interface Operators { // different operators which can be used
 
     '+':string,
     '-':string,
     '*':string,
-    '/':string
-    '=':string,
+    '/':string,
+    '=':string
 
 
 }
 
 
-interface CommandData {
+interface CommandData { // data about what can be passed into a command
     Name   : string
     Desc   : string
     Alias? : string[]
@@ -29,9 +33,9 @@ interface CommandData {
     Guild  : boolean
     Owner  : boolean
     Hidden : boolean
-    nsfw?  : boolean
+    Nsfw?  : boolean
 }
-interface CommandAData {
+interface CommandAData { // data about what can be passed into a command argument
     Name        : string
     AltNames?   : string[]
     Type        : keyof CommandArgTypes
@@ -40,14 +44,14 @@ interface CommandAData {
     Perms?      : Permissions   |   null
 }
 
-interface WeaponEffectTarget {
+interface WeaponEffectTarget { // scuffed shit
 
     Inflicted    : PlayerData
     Inflicter     : PlayerData
 
 
 }
-interface WeaponData {
+interface WeaponData {// data for what information weapons hold.
 
     Name        : string
     Damage      : number
@@ -55,24 +59,38 @@ interface WeaponData {
     DropRate?   : number
     Effect?     : Effect
     HitChance   : number
-    Cost        : {Sell:number,Buy:number}
+    Cost        : {
+        Sell:number,
+        Buy:number
+    }
 
 }
 
-interface InventoryData {
+interface InventoryData { // how inventory is saved.
     Equipped?   : [Weapon,Weapon,Weapon],
     Weapons     : Weapon[]
 }
 
-interface EffectData {
+interface EffectData { // what data an effect can have
     name:string,
     rounds:number,
-    to:{ Target : keyof WeaponEffectTarget, ValueOf : keyof PlayerData, Opr:keyof Operators},
+    to:
+        {
+            Target : keyof WeaponEffectTarget,
+            ValueOf : keyof PlayerData,
+            Opr:keyof Operators
+        },
     vPerRound:any
 }
-interface InflictedEffectData {
+interface InflictedEffectData { // data for inflicted effects :weirdchamp: why not use effect data? have no fucking clue.
     inflicting : PlayerData,
-    doing : { Target : keyof WeaponEffectTarget, ValueOf : keyof PlayerData, Value:any,Opr:keyof Operators},
+    doing :
+        {
+            Target : keyof WeaponEffectTarget,
+            ValueOf : keyof PlayerData,
+            Value:any,
+            Opr:keyof Operators
+        },
     roundsRemaining : number
 }
 
@@ -249,7 +267,7 @@ export class Inventory {
 class CommandArgument {
 
     readonly Name       : string
-    readonly AltNames?   : string[]
+    readonly AltNames?  : string[]
     readonly Needed     : boolean
     readonly Perms?     : Permissions   |   null
     readonly prefix?    : string
@@ -272,13 +290,13 @@ class Command {
     readonly Alias? : string[]              |   null
     readonly Perms? : Permissions           |   null
     readonly Args?  : CommandArgument[]     |   undefined
-    readonly nsfw?   : boolean               | undefined
+    readonly Nsfw?  : boolean               |   undefined
     readonly Guild  : boolean
     readonly Owner  : boolean
     readonly Hidden : boolean
 
     constructor(Data: CommandData) {
-        this.nsfw   = Data.nsfw
+        this.Nsfw   = Data.Nsfw
         this.Name   = Data.Name  
         this.Desc   = Data.Desc  
         this.Alias  = Data.Alias ?? null
