@@ -63,6 +63,7 @@ module.exports = async function run(client :Client, message : Message) : Promise
     // Getting command object
 
     const comm = args.shift()!.toLowerCase(); // get the command name.
+    console.log(comm,'hi')
     if (!comm || comm === '') return;
     let cmd = GetCommandFromS(comm) // Get the command object from the command name
     if (! cmd) {message.channel.send('Unable to get that command!'); return} // disregard if unable to find the command object.
