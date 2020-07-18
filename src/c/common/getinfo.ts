@@ -25,13 +25,6 @@ module.exports = class test extends Command
                         Perms : null,
                     }),
                     new CommandArgument({
-                        Name : 'person',
-                        AltNames : ['user'],
-                        Needed : false,
-                        Type : "bool" as keyof CommandArgTypes,
-                        Perms : null,
-                    }),
-                    new CommandArgument({
                         Name : 'member',
                         Needed : false,
                         Type : "member" as keyof CommandArgTypes,
@@ -63,7 +56,7 @@ module.exports = class test extends Command
 
             return {Worked : true}
 
-        } else if (this.GetArg('person',args!)) {
+        } else if (this.GetArg('member',args!)) {
 
             let mem : GuildMember = this.GetArg('member',args!) ?? message.member
 
