@@ -154,7 +154,8 @@ module.exports = async function run(client :Client, message : Message) : Promise
             }
         }
     }
-
+    message.channel.startTyping()
     let out = await cmd.run(message,client,Hargs)
+    message.channel.stopTyping()
     if (!out.Worked && out.Error) {message.channel.send(out.Error.message)}
 }
