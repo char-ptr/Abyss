@@ -1,10 +1,11 @@
 import {config} from "dotenv"
-import { Client, ClientEvents } from "discord.js"
-import { readdirSync, statSync } from "fs"
-import { Command } from "./m/class"
+import {Client, ClientEvents} from "discord.js"
+import {readdirSync, statSync} from "fs"
+import {Command} from "./m/class"
+
 config( { path: './.env' } )
 
-const Commands : Map<string,Map<string,Command>> = new Map()
+const Commands : Map<string,Map<string,[Command,boolean]>> = new Map()
 const CFolders = readdirSync(`${__dirname}/c`)
 const EFiles = readdirSync(`${__dirname}/e`)
 const client = new Client({partials : ['MESSAGE']})
@@ -35,11 +36,11 @@ for (let v of CFolders) {
         let pull = require(dir)
         let pulled : Command = new pull()
         
-        Commands.get(v)!.set(pulled.Name,pulled)
+        Commands.get(v)!.set(pulled.Name,[pulled,false])
         if (pulled.Alias) {
             for (let v2 of pulled.Alias) {
 
-                Commands.get(v)!.set(v2,pulled)
+                Commands.get(v)!.set(v2,[pulled,true])
 
             }
         }

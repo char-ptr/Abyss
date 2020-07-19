@@ -10,7 +10,8 @@ import {Commands} from "../bot"
 const GetCommandFromS = (v : string) : Command | false => {
     let c : Command | false = false
     for ( let c2 of Array.from( Commands.values() ) ) {
-        c = c2.get(v)??false
+        let cr = c2.get(v)
+        if (cr) c = cr[0];
         if (c) break;
         
     }
