@@ -4,7 +4,8 @@ import {Convert, GetCommandFromS, IsIdOwner} from "../m/func";
 import {Command, CommandArgTypes, CommandArgument} from "../m/class";
 import {GetError} from "../m/error";
 
-let ArgRex = /-+(\S*.)([^-]*)?/gm
+let ArgRex = /-+(?<name>\S*.)(?<value>[^-]*)?/gm
+let ArgRex2 = /( |[,])((?<name>\w[^,]+) ?= ?)(?<value>.[^,]*)/gm
 
 
 function GetArgumentFromString(s : string, args : CommandArgument[]) {
@@ -32,9 +33,10 @@ async function handleArg(Args : string[], cmd : Command , message : Message) : P
 
         let Arg = Args[Argi] // get arg
         let argName = Arg.split(' ')[0] ?? Arg // get the name of the argument
-        let ParArgName = argName.replace(/-*/, '').trim() // parse it, so remove the - / -- at the beginning
+        let ParArgName = argName.replace(/[-=]*/, '').trim() // parse it, so remove the - / -- at the beginning
         let Class = GetArgumentFromString(ParArgName,cmd.Args!) //See if theres a argument with that name in the command.
         if (!Class) continue // if not continue the search.
+        Arg = Arg.replace(/= /gm, '').trim()
         let args = Arg.split(' ');args.splice(0, 1) // get the argument value.
         let JoinedArgs = args.join(' ') //Join it
         let bool = argName.startsWith('--') // Check if its a bool value.
@@ -82,8 +84,11 @@ module.exports = async function run(client :Client, message : Message) : Promise
     let Hargs : {name : string, value : CommandArgTypes}[] = [] // currently stored arguemnts
     if (cmd.Args) { // check if the command requires an args
         let matcc = message.content.match(ArgRex) ? // check if the message matches the argument regex
-            message.content.match(ArgRex)!.map(v=>v.trim()) : // us so map it an trim it.
-            null // else its null.
+            message.content.match(ArgRex)!.map(v=>v.trim()) : // if so map it an trim it.
+            message.content.match(ArgRex2) ?
+                message.content.match(ArgRex2)!.map(v=>v.trim()) :
+                null // else its null.
+        console.log(matcc)
         if (!(cmd.Args.length <= 0)) { // another check to see if arguments
 
             let transargs : { // arg format.
