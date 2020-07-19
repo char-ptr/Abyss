@@ -177,6 +177,7 @@ const GetMemberFromGuild = async (msg : Message | Guild, str : string) : Promise
     for (let v of ms) {
         if (v[1].displayName.toLowerCase().match(str.toLowerCase()))    {could = [...could, v[1]]; continue;}
         if (v[0] === str)                                               {could = [...could, v[1]]; continue;}
+        if (v[1].id === str)                                            {could = [...could, v[1]]; break;}
         if (v[1].user.username.toLowerCase().match(str.toLowerCase()))  {could = [...could, v[1]]; }
     }
     if (!could) return null
@@ -215,6 +216,8 @@ const Convert = async <T>(s : string, wanted : keyof CommandArgTypes, m : Messag
 
     let ts : string[] = []
 
+    console.log(s,wanted)
+
     let conv : CommandArgTypes | null = null
 
     switch (wanted) {
@@ -230,7 +233,7 @@ const Convert = async <T>(s : string, wanted : keyof CommandArgTypes, m : Messag
         break;
         case 'num' as keyof CommandArgTypes:
 
-            conv = isNaN(Number(s)) ? null : Number(s) as CommandArgTypes
+            conv = isNaN(Number(s)) ? null : parseInt(s) as CommandArgTypes
 
         break;
         case 'bool' as keyof CommandArgTypes:
@@ -242,6 +245,8 @@ const Convert = async <T>(s : string, wanted : keyof CommandArgTypes, m : Messag
             console.log('Unable to find that type.')
             return null
     }
+
+
 
     return conv
 
