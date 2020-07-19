@@ -27,7 +27,7 @@ module.exports = class test extends Command
                     [new CommandArgument({
                         Name : 'id',
                         Needed : true,
-                        Type : "num" as keyof CommandArgTypes,
+                        Type : "str" as keyof CommandArgTypes,
                         Perms : null,
                     }),
                 ]
