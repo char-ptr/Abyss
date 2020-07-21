@@ -78,10 +78,11 @@ module.exports = class test extends Command {
 		if(!MuteRole) return {Worked:false, Error:new Error('Something went wrong, i was unable to get the mute role..')}
 
 		let user = this.GetArg('user',args!) as GuildMember
-		let reason = this.GetArg('reason',args!) as string
+		let reason = this.GetArg('reason',args!) as string ?? 'No reason'
 		let time = this.GetArg('minutes',args!) as number
 
 		(await user.roles.add(MuteRole, `[Mute on behalf of ${message.author.username}] - ${reason}`).catch(()=> message.channel.send('Something went wrong while adding the mute role.')))
+		await message.channel.send(`Successfully muted ${user} for ${time} minutes with the reasoning of ${reason ?? 'No reason'}`)
 		setTimeout( ()=>user.roles.remove(MuteRole!,`[Automated unmute]`), time*60000)
 
 		return {Worked: true}
