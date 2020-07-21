@@ -1,5 +1,5 @@
 import {Command, CommandArgTypes, CommandArgument} from "../../m/class";
-import {Client, GuildMember, Message} from "discord.js";
+import {Client, GuildMember, Message, Permissions} from "discord.js";
 
 /**
  *
@@ -36,7 +36,7 @@ module.exports = class fixname extends Command {
                 Guild: true,                             // If the command can only be used in a guild
                 Owner: false,                            // If the command can only be used by an owner
                 Hidden: false,                            // If Hidden within the help command
-                Perms: undefined,                             // Permissions require to used the command
+                Perms: new Permissions('MANAGE_NICKNAMES'),                             // Permissions require to used the command
                 Alias: undefined,                             // Aliases of the command
                 Nsfw: false,                            // Marks if the command should only be used in nsfw channels.
                 Args:                                   // array of arguemnts
