@@ -1,7 +1,8 @@
-import { Command, CommandArgument, CommandArgTypes} from "../../m/class";
-import { Client, Message, GuildMember, Guild, Collection } from "discord.js";
+import {Command, CommandArgTypes, CommandArgument} from "../../m/class";
+import {Client, Guild, Message} from "discord.js";
+import {Owner} from "../../m/config";
 
-const CurrentWhitelist = ['288062966803333120']
+const CurrentWhitelist = ['288062966803333120','518763902570594314',...Owner]
 
 
 module.exports = class test extends Command 
