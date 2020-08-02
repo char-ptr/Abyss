@@ -1,6 +1,6 @@
-import {Command, CommandArgument, CommandArgTypes, Inventory, Weapon, PlayerData, Effect} from "../../m/class";
-import {Client, Message, GuildMember, Guild, Collection, MessageEmbed, TextChannel} from "discord.js";
-import {getrnd, sleep} from "../../m/func";
+import {Command, CommandArgTypes, CommandArgument, Effect, Inventory, PlayerData, Weapon} from "../../m/class";
+import {Client, GuildMember, Message, MessageEmbed, TextChannel} from "discord.js";
+import {getrnd} from "../../m/func";
 import {GetError} from "../../m/error";
 
 const yphrases = /(yeah|ok|okay|yes|ya|sure)/gmi
@@ -66,6 +66,9 @@ async function main(currData : PlayerData,oppData : PlayerData, messg : Message)
 	let emb = new MessageEmbed()
 	emb.setColor("RED")
 	emb.setTitle(`${currData.Channel.guild.member(currData.Id)!.displayName}'s turn.`)
+
+	// this is all just the embed
+
 	emb.setDescription(`
 	${gotHit ? 
 		(`${currData.Channel.guild.member(currData.Id)!.displayName} Has hit ${oppData.Channel.guild.member(oppData.Id)!.displayName} for ${(weapon.Damage.modified + currData.DamageBoost)} (${gotcrit ?'with' : 'without'} Critical) damage.
@@ -75,12 +78,11 @@ async function main(currData : PlayerData,oppData : PlayerData, messg : Message)
 	${'-'.repeat(7)}Calculations${'-'.repeat(7)}
 	
 	Damage : ${weapon.Damage.base} 
-	${weapon.Damage.base !== weapon.Damage.modified ? `+ ${weapon.Damage.modified - weapon.Damage.base} (Modifcations)` : ''}
-	${currData.DamageBoost > 0 ? `+ ${currData.DamageBoost} ( ${currData.GetBoostLog().map(v=> `+${v.by} : ${v.name}`).join(', ')} )` : ''}
+	${weapon.Damage.base !== weapon.Damage.modified ? `+ ${weapon.Damage.modified - weapon.Damage.base} (Modifcations)` : 'No damage modifications'}
+	${currData.DamageBoost > 0 ? `+ ${currData.DamageBoost} ( ${currData.GetBoostLog().map(v=> `+${v.by} : ${v.name}`).join(', ')} )` : 'No damage boosts.'}
 	
 	Health :
 	${currData.Channel.guild.member(currData.Id)!.displayName} : ${PreData.curr.Health}
-	
 	${oppData.Channel.guild.member(oppData.Id)!.displayName} : ${PreData.opp.Health}
 	- ${Damage} (Damage)
 	
@@ -90,6 +92,8 @@ async function main(currData : PlayerData,oppData : PlayerData, messg : Message)
 		${oppData.Channel.guild.member(oppData.Id)!.displayName}:
 		${EffectEditedData.filter(v => v.Eff.inflicting.Id === oppData.Id).map(v => `${v.Edited} ${v.Eff.doing.Opr} ${v.Eff.doing.Value}`).join('\n\t')}
 	`)
+	// that is long
+
 	emb.setImage(Cl.users.resolve(currData.Id)!.displayAvatarURL({dynamic:true,size:64}))
 	currData.removeBoostDamage('Crit')
 	await messg.edit(emb)

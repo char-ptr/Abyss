@@ -41,12 +41,44 @@ async function handleArg(Args : string[], cmd : Command , message : Message) : P
         let JoinedArgs = args.join(' ') //Join it
         let bool = argName.startsWith('--') // Check if its a bool value.
 
-        if (!args && !bool) CollArgs = {...CollArgs, [ParArgName] : { Completed : false, Msg: 'Bad argument, got nothing.'} }
-        if (Class.Perms && member) if(member.permissions.missing(Class.Perms, true)) CollArgs = {...CollArgs, [ParArgName] : { Completed : false, Msg: `You do not have the required perms to use this argument! Required perms : ${Class.Perms.toArray().join(' | ')}`} }
+        if (!args && !bool) CollArgs =
+            {
+                ...CollArgs,
+                [ParArgName] : {
+                    Completed : false,
+                    Msg: 'Bad argument, got nothing.'
+                }
+            }
+        if (Class.Perms && member)
+            if (member.permissions.missing(Class.Perms, true))
+                CollArgs =
+                    {
+                        ...CollArgs,
+                        [ParArgName] :
+                            {
+                                Completed : false,
+                                Msg: `You do not have the required perms to use this argument! Required perms : ${Class.Perms.toArray().join(' | ')}`
+                            }
+                    }
         let conv = await Convert(JoinedArgs, Class.Type, message)
-        if (!conv && !bool) CollArgs = {...CollArgs, [ParArgName] : { Completed : false, Msg: `I was unable to convert "${JoinedArgs}" into typeof ${Class.Type}.`} }
+        if (!conv && !bool) CollArgs =
+            {
+                ...CollArgs,
+                [ParArgName] :
+                    {
+                        Completed : false,
+                        Msg: `I was unable to convert "${JoinedArgs}" into typeof ${Class.Type}.`
+                    }
+            }
         if (bool) conv = true as CommandArgTypes
-        CollArgs = {...CollArgs, [Class.Name] : {Complete : true,Value : conv}}
+        CollArgs =
+            {
+                ...CollArgs,
+                [Class.Name] : {
+                    Complete : true,
+                    Value : conv
+                }
+            }
     }
     return CollArgs
 }
@@ -59,7 +91,8 @@ module.exports = async function run(client :Client, message : Message) : Promise
 
     if (message.content.indexOf(Prefix) !== 0) return; // checks if the first character is the prefix
     if (message.author.bot) return // disregards the message if the message was from a bot.
-    const args = message.content.slice(Prefix.length).trim().split(/ +/g); //splits the message content where ever a space was.
+    const args = message.content.slice(Prefix.length) // gets the message and slices the prefix
+        .trim().split(/ +/g); //splits the message content where ever a space was.
     if (!args) return // disregard if no args
 
     // Getting command object
@@ -67,17 +100,29 @@ module.exports = async function run(client :Client, message : Message) : Promise
     const comm = args.shift()!.toLowerCase(); // get the command name.
     if (!comm || comm === '') return;
     let cmd = GetCommandFromS(comm) // Get the command object from the command name
-    if (! cmd) {message.channel.send('Unable to get that command!'); return} // disregard if unable to find the command object.
+    if (! cmd)
+    {
+        message.channel.send('Unable to get that command!');
+        return
+    } // disregard if unable to find the command object.
 
     // Command checks based on channel types.
 
     switch(message.channel.type) { // do different shit based on the channel type.
 
         case "text":
-            if (cmd.Nsfw && !message.channel.nsfw) {message.channel.send('You must be in a nsfw channel to use this command.'); return}
-
+            if (cmd.Nsfw && !message.channel.nsfw)
+            {
+                message.channel.send('You must be in a nsfw channel to use this command.');
+                return
+            }
+        break;
     }
-    if (cmd.Owner) if(! IsIdOwner(message.author.id) ) {message.channel.send(`Sorry, but the command you tried to execute requires you to be an "Owner"`);return} // disregard if the command is an owner and the message author isn't an owner.
+    if (cmd.Owner) if(! IsIdOwner(message.author.id) )
+    {
+        message.channel.send(`Sorry, but the command you tried to execute requires you to be an "Owner"`);
+        return
+    } // disregard if the command is an owner and the message author isn't an owner.
 
     // Beginning of argument handling
 
@@ -113,49 +158,53 @@ module.exports = async function run(client :Client, message : Message) : Promise
             }
             if (matcc) {
                 let out = await handleArg(matcc, cmd, message) // get the command argument response
-                for (let argssi in Object.keys(out)) {
-                    let argss = Object.values(out)[argssi]
-                    let name = Object.keys(out)[argssi]
-                    if (!argss.Complete )continue;
-                    let index = Object.keys(transargs).indexOf(name)
-                    if ( name in transargs ) {
-                        let val = transargs[Object.keys(transargs)[index]]
-                        transargs[Object.keys(transargs)[index]] = {Needed : val.Needed,value : argss.Value as CommandArgTypes, Msg : argss.Msg}
+                for (let argssi in Object.keys(out)) { // looping over the keys of the output
+                    let argss = Object.values(out)[argssi] // getting the value by the key
+                    let name = argssi // setting key name to a more understandable variable
+                    if (!argss.Complete ) continue; // if the argument is incomplete / invalid then ignore this loop
+                    let index = Object.keys(transargs).indexOf(name) // get the index
+                    if ( name in transargs ) { // check if the arg is in the exemplar obj check
+                        let val = transargs[Object.keys(transargs)[index]] //get the value in exemplar obj check
+                        transargs[Object.keys(transargs)[index]] = { // update exemplar obj to now have current args
+                            Needed : val.Needed, // from old
+                            value : argss.Value as CommandArgTypes, // the returned argument
+                            Msg : argss.Msg // the message which gets returned. is usually only used when error has occurred
+                        }
 
                     }
 
                 }
             }
-            for (let i of Object.keys(transargs) ) {
-                if (!transargs.hasOwnProperty(i)) return
-                let v = transargs[i]
-                if (v.Needed && !v.value)
+            for (let i of Object.keys(transargs) ) { // going over all the keys in trans arg (main handled arguments) to check if there's an error in any.
+                if (!transargs.hasOwnProperty(i)) return // if the property somehow doesn't exist return.
+                let v = transargs[i] // get the value from the index / key
+                if (v.Needed && !v.value) // check if the argument is needed, if so it also checks if there is a value if not it will follow the code below.
                 {
-                    message.channel.send(v.Msg??'' + GetError('BAD_ARG'));
-                    (GetCommandFromS('help') as Command)
-                        .run(
-                            message,
-                            client,
-                            [{
-                                name:'Command',
-                                value:cmd.Name as CommandArgTypes
+                    message.channel.send(v.Msg??'' + GetError('BAD_ARG')); // send a message saying that the user inputted a bad argument
+                    await (GetCommandFromS('help') as Command) // get the help command
+                        .run( // and run it
+                            message, // default message
+                            client, // the discord client
+                            [{ // the args, we're going to manually pass the command which was going to be used and its "command"
+                                name:'Command', // selects the argument "command" as the one this obj will handle
+                                value:cmd.Name as CommandArgTypes // and sets the cmd as its value.
                             }]
                         ) ;
-                    return
+                    return // return to prevent other code from running as there is an error with the argument and will cause errors in main code which is ran in the command
                 }
-                Hargs =
-                    [
-                        ...Hargs,
-                        {
-                            name : i,
-                            value : v.value as CommandArgTypes
-                        }
-                    ]
+                Hargs = // sets the actual obj which is going to be sent to the things in transarg.
+                [
+                    ...Hargs, // old content of this array
+                    {
+                        name : i, // key
+                        value : v.value as CommandArgTypes // value
+                    }
+                ]
             }
         }
     }
-    message.channel.startTyping()
-    let out = await cmd.run(message,client,Hargs)
-    message.channel.stopTyping()
-    if (!out.Worked && out.Error) {message.channel.send(out.Error.message)}
+    message.channel.startTyping() // start typing so in channel you can see that the bot is typing
+    let out = await cmd.run(message,client,Hargs) // run the command and wait until its finished
+    message.channel.stopTyping() // stop typing sometimes will take longer than expected due to rate limiting
+    if (!out.Worked && out.Error) {message.channel.send(out.Error.message)} // if it didn't work and there's and error send that error message.
 }
