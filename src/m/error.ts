@@ -5,6 +5,7 @@ let Errors : object =
 
 }
 
+//@todo GetError is literally useless.
 export function GetError(err : string) : string | false {
 	// @ts-ignore
 	return Errors[err]?? false

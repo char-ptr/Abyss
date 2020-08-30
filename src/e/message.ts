@@ -22,7 +22,7 @@ function GetArgumentFromString(s : string, args : CommandArgument[]) {
  *
  * @description Used to handle the arguments which are passed into the command.
  * @param Args The arguments (words after command) within the message.
- * @param Class The class of the argument.
+ * @param cmd The class of the argument.
  * @param message The message object which initiated the event.
  */
 async function handleArg(Args : string[], cmd : Command , message : Message) : Promise<{ [unknown : string] : {Complete : boolean, Value : CommandArgTypes, Msg? : string} }>  {

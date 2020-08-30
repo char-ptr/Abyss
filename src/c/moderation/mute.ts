@@ -86,6 +86,6 @@ module.exports = class test extends Command {
 		setTimeout( ()=>user.roles.remove(MuteRole!,`[Automated unmute]`), time*60000)
 
 		return {Worked: true}
-	}
+	}	// @todo make this save to db
 
 }

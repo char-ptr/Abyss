@@ -92,7 +92,7 @@ export function ChooseOperator(opr : keyof Operators, v1:any,v2:any) {
         default:
             return v2
         break;
-    }
+    } //@todo this is terribly done. It needs to be remade.
 
 
 }
@@ -144,7 +144,8 @@ export const OwnerToUserArray = async (client : Client) : Promise<User[]> => {
 /**
  *
  * @param milliseconds ms
- * @todo Fix, so that it actually waits the correct amount of time.
+ * @todo Fix, so that it actually waits the correct amount of time. yeah prob wont use this so doesn't matter i would assume
+ *
  * 
  */
 export function sleep(milliseconds : number) {
@@ -245,7 +246,7 @@ const Convert = async <T>(s : string, wanted : keyof CommandArgTypes, m : Messag
         default:
             console.log('Unable to find that type.')
             return null
-    }
+    } //@todo probably a better way to do this.
 
 
 
