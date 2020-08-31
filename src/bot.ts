@@ -13,6 +13,8 @@ const client = new Client({partials : ['MESSAGE']})
 if (process.env.test) client.login(process.env.TEST_DISCORD_TOKEN)
 else client.login(process.env.DISCORD_TOKEN)
 
+console.log(`Running in ${process.env.test ? 'test' : 'normal'} mode`)
+
 for (let v of EFiles) {
 
     if (!v.endsWith('.js')) {console.error('NONE JS file in EVENT directory'); continue}
