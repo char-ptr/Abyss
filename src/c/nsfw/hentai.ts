@@ -1,22 +1,16 @@
-import {Command, CommandArgTypes} from "../../m/class";
+import {Command, CommandArgTypes, CommandArgument} from "../../m/class";
 import {Client, Message, MessageEmbed} from "discord.js";
-import got from "got";
-import {getrnd} from "../../m/func";
-import {GetError} from "../../m/error";
+import { existsSync, readdirSync, readFileSync } from "fs";
+import { join } from "path";
+let txt : Buffer
+if (existsSync(join(__dirname,'../../../Util/hData.json'))) {
 
-let stored : any
-let cannew = true
-
-function getFile(jsn : any) : any {
-	let dat = jsn.data
-	let meta = jsn.meta
-	let cat =  Math.floor( Math.random() * (dat.length-1) )
-	//console.log(cat,dat[cat])
-	let ind = dat[cat][Math.floor( Math.random() * (dat[cat].length-1) )]
-	if(!ind) return getFile(jsn)
-	return ind
-
+	txt = readFileSync(join(__dirname,'../../../Util/hData.json'))
+}else{
+	txt = Buffer.from(JSON.stringify({'Normal':[],'Yuri':[]}))
 }
+let files : {[ley:string] : string[], Normal:string[],Yuri:string[]} = JSON.parse(txt.toString('utf8'))
+
 
 
 module.exports = class test extends Command
@@ -34,44 +28,100 @@ module.exports = class test extends Command
 				Owner : false,
 				Hidden: true,
 				Nsfw  : true,
-				Alias : ['hen']
+				Alias : ['hen'],
+				Args : [
+					new CommandArgument({
+						Name:'amount',
+						Needed:false,
+						Type:'num',
+						AltNames:['a']
+					}),
+					new CommandArgument({
+						Name:'sort',
+						Needed:false,
+						Type:'str',
+						AltNames:['s']
+					}),
+					new CommandArgument({
+						Name:'type',
+						Needed:false,
+						Type:'str',
+						AltNames:['t']
+					}),
+					new CommandArgument({
+						Name:'many',
+						Needed:false,
+						Type:'bool',
+						AltNames:['m']
+					}),
+				]
 			}
 		)
 
 	}
 
 	public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ) => {
-		return {Worked : false, Error : new Error('Command is currently broken, may be fixed in the future')}
-		console.log(!cannew? 'Data is stored in cache so it\'s being used' : 'Data isn\'t stored in cache so going to request and cache.')
-		if (cannew) {
-			cannew = false
-			let index = getrnd(0, 2000)
-			console.log('sending request', index)
-			let res = (await got(`https://hr.hanime.tv/api/v8/community_uploads?channel_name__in[]=nsfw-general&__offset=${index}&__order=created_at,DESC&loc=https://hanime.tv`).catch(e=>{console.log(e);return e}) )
-			console.log(res)
-			res = res.body
-			if (!res) return {
-				Worked: false,
-				Error: new Error('There was an issue contacting the api, try again later?')
-			}
-			let jsn = JSON.parse(res)
-			if (!jsn) return {
-				Worked: false,
-				Error: new Error('There was an issue contacting the api, try again later?')
-			}
-			if (!stored) {stored = jsn;stored.data = [stored.data]} else { if (stored.data.indexOf([jsn.data]) < 0) stored.data = [...stored.data, [...jsn.data]]; else console.log('Already indexed..')}
-			stored.meta += jsn.meta
-			setTimeout( () => {cannew = true},5e3 )
-			setTimeout( () => {stored.data.splice(0,1)},15e3 )
+
+		if (this.GetArg('many',args!)) {
+			message.channel.send(`There is currently ${files['Normal'].length + files['Yuri'].length} files in DB`)
+			return {Worked:true}
 		}
-		let jsn = stored
-		console.log(jsn.data.map((v:any)=>v.map((v2:any) => v2.id ) ) )
-		let meta = jsn.meta
-		if(meta.error) {console.error(meta.error); return {Worked : false,Error:new Error('There was an issue contacting the api, try again later?')}}
-		let dat = getFile(jsn)
 
-		await message.channel.send( new MessageEmbed().setImage(dat.url).setDescription(`There is currently a ${ Number( ( 1 / (24*(stored.data.length as number)) ).toFixed(2))*10 }% chance of a duplicate`) ).catch( () => message.channel.send( GetError('NO_EMBED_PERMS')) )
-		return {Worked : true}
+		const generateBySort = (sort:string,file:string[],index?:number) : string =>{
+			switch (sort) {
+				case ('first'):
+					return file[index??0]
+				break;
+				case ('last'):
+					return file[file.length-1 - (index ??0) ]
+				break;
+				case('random'):
+					return file[ Math.floor(Math.random() * file.length)]
+				break;
+				default : return ''; break;
+			}
+		} 
+		
+		const generateByType = (type:string) : string =>{
+			switch (type) {
+				case ('normal'):
+					return 'Normal'
+				break;
+				case ('yuri'):
+					return 'Normal'
+				break;
+				default : return 'Normal'; break;
+			}
+		} 
+
+		let filesu : string[] = [];
+
+		let convsdat = new Map([['r','random'],['l','last'],['f','first']])
+		let convsort = (t:string)=> convsdat.get(t) ?? t
+		
+		let convtdat = new Map([['n','normal'],['y','yuri']])
+		let convType = (t:string)=> convtdat.get(t) ?? t
+
+		let amount = this.GetArg('amount',args!)
+		let sort = convsort (this.GetArg('sort',args!))
+		let type = generateByType (convType (this.GetArg('type',args!)))
+		console.log(sort)
+
+
+
+		if (! sort){
+			console.log('Automatically converting to random');
+			sort = 'random'
+		}
+		for (let i =0;i<(amount ?? 1);i++){
+			filesu = [
+				...filesu,
+				generateBySort(sort,files[type],i)
+			]
+		}
+		console.log(filesu,amount)
+		message.channel.send({files:filesu}).catch(r=>{message.channel.send('Unfortunately i was unable to send, this is likely due to the file being too large.');console.log(r)})
+
+		return {Worked:true}
 	}
-
 }
