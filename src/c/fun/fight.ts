@@ -1,6 +1,6 @@
 import {Command, CommandArgTypes, CommandArgument, Effect, Inventory, PlayerData, Weapon} from "../../m/class";
 import {Client, GuildMember, Message, MessageEmbed, TextChannel} from "discord.js";
-import {getrnd} from "../../m/func";
+import {getrnd, IsIdOwner} from "../../m/func";
 import {GetError} from "../../m/error";
 
 const yphrases = /(yeah|ok|okay|yes|ya|sure)/gmi
@@ -103,6 +103,24 @@ async function main(currData : PlayerData,oppData : PlayerData, messg : Message)
 	}, 6e3);
 }
 
+const godWeapon = new Weapon({
+	Cost:{
+		Buy:999,
+		Sell:999
+	},
+	Damage:74,
+	Droppable:false,
+	HitChance:100,
+	Name:'yes',
+	DropRate:0,
+	Effect: new Effect({
+		name:'god\'s burn',
+		rounds:44,
+		to:{'Opr':'-','Target':'Inflicted',ValueOf:'Health'},
+		vPerRound:'55'
+	})
+})
+
 module.exports = class test extends Command
 {
 
@@ -157,20 +175,31 @@ module.exports = class test extends Command
 		await embmess.edit(emb)
 		Cl = client
 		let meminv      = new Inventory({Weapons : [new Weapon({
-				Name:'stick',
-				Damage:5,
-				Droppable:false,
-				HitChance : 98,
-				Cost : {Buy :1, Sell : 1}}
-				)] })
+			Name:'stick',
+			Damage:5,
+			Droppable:false,
+			HitChance : 98,
+			Cost : {Buy :1, Sell : 1}}
+		)] })
+
 		let oppinv      = new Inventory({Weapons : [new Weapon({
-				Name:'stick',
-				Damage:5,
-				Droppable:false,
-				HitChance : 98,
-				Effect : new Effect( { to : {Target:'Inflicted',ValueOf:"Health",Opr:'-'}, rounds:1,name:'Test',vPerRound:1 } ),
-				Cost : {Buy :1, Sell : 1}}
-			)] })
+			Name:'stick',
+			Damage:5,
+			Droppable:false,
+			HitChance : 98,
+			Effect : new Effect( { to : {Target:'Inflicted',ValueOf:"Health",Opr:'-'}, rounds:1,name:'Test',vPerRound:1 } ),
+			Cost : {Buy :1, Sell : 1}}
+		)] })
+
+		if (IsIdOwner(message.member!.id)) {
+			meminv.AddWeapons(godWeapon)
+			meminv.SetEquipped(meminv.Weapons)
+		} else if (IsIdOwner(opp.id)) {
+			oppinv.AddWeapons(godWeapon)
+			oppinv.SetEquipped(oppinv.Weapons)
+		}
+
+
 		let StarterData = new PlayerData( {id:message.member!.id, inv : meminv,health:100, channel : message.channel as TextChannel } )
 		let OppData     = new PlayerData( {id:opp.id, inv : oppinv,health:100, channel : message.channel as TextChannel} )
 
