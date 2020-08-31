@@ -54,6 +54,12 @@ module.exports = class test extends Command
 						Type:'bool',
 						AltNames:['m']
 					}),
+					new CommandArgument({
+						Name:'find',
+						Needed:false,
+						Type:'str',
+						AltNames:['f']
+					}),
 				]
 			}
 		)
@@ -67,6 +73,11 @@ module.exports = class test extends Command
 			return {Worked:true}
 		}
 
+		let SearchQ : string
+		if (this.GetArg('find',args!))
+			SearchQ = (this.GetArg('find',args!) as string)
+			.replace(/ +/g, '-')
+
 		const generateBySort = (sort:string,file:string[],index?:number) : string =>{
 			switch (sort) {
 				case ('first'):
@@ -78,6 +89,8 @@ module.exports = class test extends Command
 				case('random'):
 					return file[ Math.floor(Math.random() * file.length)]
 				break;
+				case('find'):
+					return file.filter(v=>v.includes( SearchQ ))[(index ?? 0)]
 				default : return ''; break;
 			}
 		} 
@@ -120,7 +133,7 @@ module.exports = class test extends Command
 			]
 		}
 		console.log(filesu,amount)
-		message.channel.send({files:filesu}).catch(r=>{message.channel.send('Unfortunately i was unable to send, this is likely due to the file being too large.');console.log(r)})
+		message.channel.send({files:filesu}).catch(r=>{message.channel.send('Unfortunately i was unable to send, Most likely due to being unable to match options you provided');console.log(r)})
 
 		return {Worked:true}
 	}
