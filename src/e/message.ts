@@ -158,16 +158,13 @@ module.exports = async function run(client :Client, message : Message) : Promise
             }
             if (matcc) {
                 let out = await handleArg(matcc, cmd, message) // get the command argument response
-                console.log(out)
                 for (let argssi in Object.keys(out)) { // looping over the keys of the output
                     let argss = Object.values(out)[argssi] // getting the value by the key
                     let name = Object.keys(out)[argssi] // setting key name to a more understandable variable
                     if (!argss.Complete ) continue; // if the argument is incomplete / invalid then ignore this loop
                     let index = Object.keys(transargs).indexOf(name) // get the index
-                    console.log(index, name)
                     if ( name in transargs ) { // check if the arg is in the exemplar obj check
                         let val = transargs[Object.keys(transargs)[index]] //get the value in exemplar obj check
-                        console.log(val,index,argss.Value)
                         transargs[Object.keys(transargs)[index]] = { // update exemplar obj to now have current args
                             Needed : val.Needed, // from old
                             value : argss.Value as CommandArgTypes, // the returned argument
@@ -178,7 +175,6 @@ module.exports = async function run(client :Client, message : Message) : Promise
 
                 }
             }
-            console.log(transargs)
             for (let i of Object.keys(transargs) ) { // going over all the keys in trans arg (main handled arguments) to check if there's an error in any.
                 if (!transargs.hasOwnProperty(i)) return // if the property somehow doesn't exist return.
                 let v = transargs[i] // get the value from the index / key
