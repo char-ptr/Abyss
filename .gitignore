@@ -1,6 +1,7 @@
 .env
 # Not needed.
 node_modules/
+Util/hData.json
 # make sure that any compiled code doesn't get commited
 dist/
 # everything.

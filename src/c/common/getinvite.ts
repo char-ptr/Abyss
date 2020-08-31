@@ -29,7 +29,7 @@ module.exports = class test extends Command
                     new CommandArgument({
                         Name : 'o',
                         Needed : false,
-                        Type : "str" as keyof CommandArgTypes,
+                        Type : "bool" as keyof CommandArgTypes,
                         Perms : null,
                     }),
                 ]
