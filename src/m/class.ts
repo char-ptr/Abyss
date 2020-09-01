@@ -39,6 +39,7 @@ interface CommandAData { // data about what can be passed into a command argumen
     Name        : string
     AltNames?   : string[]
     Type        : keyof CommandArgTypes
+    ExampleVal? : string
     Needed      : boolean
     prefix?     : string
     Perms?      : Permissions   |   null
@@ -181,34 +182,6 @@ export class Effect {
     }
 }
 
-export class Xor {
-
-    readonly key = Math.round(getrnd(-100,100));
-    constructor(k?:number) {
-        this.key = k??this.key
-    }
-
-    public Encrypt = (str:string) => {
-        let result = '';
-        for (let s of str) {
-            result += String.fromCharCode( this.key ^ s.charCodeAt(0) );
-
-        }
-        return Buffer.from(result,'ascii').toString('hex')
-
-    }
-
-    public Decrypt = (hex: string) => {
-        let hash = Buffer.from(hex,'hex').toString('ascii')
-        let result = '';
-        for (let s of hash) {
-            result += String.fromCharCode( this.key ^ s.charCodeAt(0) );
-        }
-        return result;
-    }
-
-}
-
 export class Weapon {
 
     public Damage       : {base : number, modified : number}
@@ -262,6 +235,26 @@ export class Inventory {
     }
 }
 
+interface ServerSettingsData {
+    BlockedCommands : string[],
+    MuteRole        : string,
+
+    
+}
+
+class ServerSettings {
+
+}
+
+interface UserSettingsData {
+    Inventory : Inventory
+    Id : string
+    
+}
+
+class UserSettings {
+
+}
 
 
 class CommandArgument {
@@ -271,12 +264,14 @@ class CommandArgument {
     readonly Needed     : boolean
     readonly Perms?     : Permissions   |   null
     readonly prefix?    : string
+    readonly ExampleVal?: string
     readonly Type       : keyof CommandArgTypes
     constructor (Data   : CommandAData) {
 
         this.Name       = Data.Name
         this.AltNames   = Data.AltNames
         this.Needed     = Data.Needed
+        this.ExampleVal = Data.ExampleVal 
         this.Perms      = Data.Perms    ?? null
         this.prefix     = Data.prefix   ?? ''
         this.Type       = Data.Type as keyof CommandArgTypes
@@ -314,7 +309,7 @@ class Command {
      * @param args The arguments for this command.
      *
     */
-    public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ): Promise<{Worked : boolean, Error? : Error}> => {
+    public run = async <t >(message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ): Promise<{Worked : boolean, Error? : Error}> => {
 
         return {Worked : false, Error : new Error('There is no run function!')}
     }

@@ -57,10 +57,10 @@ module.exports = class test extends Command
             emb.setTimestamp(new Date())
             emb.setColor('#b0ffa8')
             emb.addField('Usage',`\`\`\`css
-${Prefix}${c.Name} ${c.Args ? c.Args.map(v => `-${v.Type ==='bool'? '-':''}${v.Name}${!v.Needed?'?':''}${v.Type !== 'bool'? ' '+v.Type : ''}` ).join(' ') : ''}
+${Prefix}${c.Name} ${c.Args ? c.Args.map(v => `-${v.Type ==='bool'? '-':''}${v.Name}${!v.Needed?'?':''}${v.ExampleVal ? ` (${v.ExampleVal})` : ''}${v.Type !== 'bool'? ' '+v.Type : ''}` ).join(' ') : ''}
 OR
 ${Prefix}${c.Name} ${c.Args ? c.Args.map(v => `${v.Name}${!v.Needed?'?':''} = ${v.Type !== 'bool'? ''+v.Type : 'true|false'}` ).join(', ') : ''}\`\`\`
-            \`-- = true?, ? = optional, | = or\``)
+            \`-- = true?, ? = optional, | = or, () = example\``)
             emb.addField('Permissions', c.Perms?.toArray().join(', ') ?? 'No permissions')
             emb.addField('Guild only', c.Guild ? 'Yes' : 'No')
             if ( this.GetArg('src', args!) && IsIdOwner(message.author.id) ) emb.addField('src', `\`\`\`ts\n${c.run.toString().slice(0,1004).length >= 1003 ? c.run.toString().slice(0,1004) + '\n...' : c.run.toString()}\n\`\`\``)
