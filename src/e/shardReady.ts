@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js"
+import { Client } from "discord.js"
 
 module.exports = function run(client :Client, id : number, ug? : Set<string>) : void {
 

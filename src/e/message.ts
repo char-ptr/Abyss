@@ -1,8 +1,8 @@
-import {Client, Message} from "discord.js"
-import {Prefix} from "../m/config";
-import {Convert, GetCommandFromS, IsIdOwner} from "../m/func";
-import {Command, CommandArgTypes, CommandArgument} from "../m/class";
-import {GetError} from "../m/error";
+import { Client, Message } from "discord.js";
+import { Command, CommandArgTypes, CommandArgument } from "../m/class";
+import { Prefix } from "../m/config";
+import { GetError } from "../m/error";
+import { Convert, GetCommandFromS, IsIdOwner } from "../m/func";
 
 let ArgRex = /-+(?<name>\S*.)(?<value>[^-]*)?/gm
 let ArgRex2 = /( |[,])((?<name>\w[^,]+) ?= ?)(?<value>.[^,]*)/gm
@@ -25,7 +25,7 @@ function GetArgumentFromString(s : string, args : CommandArgument[]) {
  * @param cmd The class of the argument.
  * @param message The message object which initiated the event.
  */
-async function handleArg(Args : string[], cmd : Command , message : Message) : Promise<{ [unknown : string] : {Complete : boolean, Value : CommandArgTypes, Msg? : string} }>  {
+async function handleArg(Args : string[], cmd : Command , message : Message) : Promise<{ [key : string] : {Complete : boolean, Value : CommandArgTypes, Msg? : string} }>  {
     let member = message.member
     let CollArgs = {}
 
@@ -133,7 +133,6 @@ module.exports = async function run(client :Client, message : Message) : Promise
             message.content.match(ArgRex2) ?
                 message.content.match(ArgRex2)!.map(v=>v.trim()) :
                 null // else its null.
-        console.log(matcc)
         if (!(cmd.Args.length <= 0)) { // another check to see if arguments
 
             let transargs : { // arg format.
