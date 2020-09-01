@@ -29,18 +29,21 @@ module.exports = class test extends Command {
 							Needed: true,
 							Type: "member" as keyof CommandArgTypes,
 							Perms: null,
+							AltNames:['u']
 						}),
 						new CommandArgument({
 							Name: 'minutes',
 							Needed: true,
 							Type: "num" as keyof CommandArgTypes,
 							Perms: null,
+							AltNames:['m']
 						}),
 						new CommandArgument({
 							Name: 'reason',
 							Needed: false,
 							Type: "str" as keyof CommandArgTypes,
 							Perms: null,
+							AltNames:['r']
 						}),
 					]
 			}
@@ -67,9 +70,9 @@ module.exports = class test extends Command {
 
 
 			for (let [id, channel] of message.guild!.channels.cache) {
-				await channel.createOverwrite(MuteRole,{
+				await (channel.createOverwrite(MuteRole,{
 					SEND_MESSAGES:false
-				}).catch( () => {return {Worked:false, Error:new Error('Unable to make channel overwrites. Check the permissions.')} } )
+				}).catch( () => {return {Worked:false, Error:new Error('Unable to make channel overwrites. Check the permissions.')} } ) )
 			}
 		}
 
