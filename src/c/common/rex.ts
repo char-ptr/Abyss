@@ -36,7 +36,7 @@ module.exports = class test extends Command
     }
 
     public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ) => {
-        const code = `return (${this.GetArg('code',args!)})`
+        let code = `return (${this.GetArg('code',args!)})`
             code.replace(/(process)/gmi,'no')
         try {
             console.log(code)
