@@ -22,8 +22,8 @@ module.exports = class test extends Command
                 Name : 'rex',
                 Desc : 'Execute javascript.',
                 Guild : false,
-                Owner : true,
-                Hidden : true,
+                Owner : false,
+                Hidden : false,
                 Args : [new CommandArgument({
                     Name : 'code',
                     Needed : true,
