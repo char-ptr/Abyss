@@ -1,5 +1,6 @@
 import {Command, CommandArgTypes, CommandArgument} from "../../m/class";
 import {Client, Message} from "discord.js";
+import { inspect } from "util";
 
 const clean = (text:string) => {
     if (typeof(text) === "string")
@@ -18,12 +19,11 @@ module.exports = class test extends Command
         super
         ( 
             { 
-                Name : 'exe',
-                Desc : 'Execute javascript. in current context',
+                Name : 'rex',
+                Desc : 'Execute javascript.',
                 Guild : false,
                 Owner : true,
                 Hidden : true,
-                Alias : ['exec'],
                 Args : [new CommandArgument({
                     Name : 'code',
                     Needed : true,
@@ -37,15 +37,22 @@ module.exports = class test extends Command
 
     public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ) => {
         try {
-            const code = this.GetArg('code',args!)
-            let evaled = await eval(code);
+            const code = `return (${this.GetArg('code',args!)})`
+            console.log(code)
+            let func = function()
+            {
+                return new Function(code)()
+            }
+
+            let evaled = func.call({});
+            console.log(evaled,func.toString())
        
             if (typeof evaled !== "string")
-              evaled = require("util").inspect(evaled);
+              evaled = inspect(evaled);
        
-              message.channel.send(clean(evaled), {code:"ts", split:true});
+              message.channel.send(clean(evaled), {code:"js", split:true});
         } catch (err) {
-            message.channel.send(`\`ERROR\` \`\`\`ts\n${clean(err)}\n\`\`\``);
+            message.channel.send(`\`ERROR\` \`\`\`js\n${clean(err)}\n\`\`\``);
         }
 
 
