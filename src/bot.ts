@@ -19,7 +19,7 @@ for (let v of EFiles) {
 
     if (!v.endsWith('.js')) {console.error('NONE JS file in EVENT directory'); continue}
     let pull : Function = require(`${__dirname}/e/${v}`)
-    if (!pull) {console.error(`Command '${v}' DOES NOT have a run function!`); continue}
+    if (!pull) {console.error(`Event '${v}' DOES NOT have a function!`); continue}
     let s = v.slice(0,-3) as keyof ClientEvents
     if (typeof s != 'string') break
     client.on( s , pull.bind(null,client))
