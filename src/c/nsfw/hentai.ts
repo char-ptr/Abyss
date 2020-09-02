@@ -101,7 +101,7 @@ module.exports = class test extends Command
 					return 'Normal'
 				break;
 				case ('yuri'):
-					return 'Normal'
+					return 'Yuri'
 				break;
 				default : return 'Normal'; break;
 			}
@@ -118,7 +118,7 @@ module.exports = class test extends Command
 		let amount = this.GetArg('amount',args!)
 		let sort = convsort (this.GetArg('sort',args!))
 		let type = generateByType (convType (this.GetArg('type',args!)))
-		console.log(sort)
+		console.log(type)
 
 
 
