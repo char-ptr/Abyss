@@ -216,10 +216,6 @@ export async function PartialConv <t>(thing : any) : Promise<t> {
  */
 const Convert = async <T>(s : string, wanted : keyof CommandArgTypes, m : Message) : Promise<CommandArgTypes|null> => {
 
-    let ts : string[] = []
-
-    console.log(s,wanted)
-
     let conv : CommandArgTypes | null = null
 
     switch (wanted) {
