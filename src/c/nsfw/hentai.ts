@@ -78,7 +78,7 @@ module.exports = class test extends Command
 			SearchQ = (this.GetArg('find',args!) as string)
 			.replace(/ +/g, '-')
 
-		const generateBySort = (sort:string,file:string[],index?:number) : string =>{
+		const generateBySort = (sort:string,file:string[],index?:number, amount?:number) : string =>{
 			switch (sort) {
 				case ('first'):
 					return file[index??0]
@@ -90,7 +90,8 @@ module.exports = class test extends Command
 					return file[ Math.floor(Math.random() * file.length)]
 				break;
 				case('find'):
-					return file.filter(v=>v.includes( SearchQ ))[(index ?? 0)]
+					let fil = file.filter(v=>v.includes( SearchQ ))
+					return fil[(Math.floor(Math.random() * fil.length))]
 				default : return ''; break;
 			}
 		} 
@@ -129,7 +130,7 @@ module.exports = class test extends Command
 		for (let i =0;i<(amount ?? 1);i++){
 			filesu = [
 				...filesu,
-				generateBySort(sort,files[type],i)
+				generateBySort(sort,files[type],i,amount)
 			]
 		}
 		console.log(filesu,amount)
