@@ -55,7 +55,7 @@ async function handleArg(
 				},
             };
 		if (Class.Perms && member)
-			if (member.permissions.missing(Class.Perms, true))
+			if (member.permissions.missing(Class.Perms, true).length)
 				CollArgs = {
 					...CollArgs,
 					[ParArgName]: {
@@ -127,8 +127,9 @@ module.exports = async function run(
 			break;
     }
     if (cmd.Perms && message?.member) {
-        if (message?.member?.permissions.missing(cmd.Perms,true)) {
-            message.channel.send(`You do not have the required perms to use this command! Required perms : ${cmd.Perms.toArray().join(" | ")}`)
+        let missing = message?.member?.permissions.missing(cmd.Perms,true)
+        if (missing.length) {
+            message.channel.send(`You do not have the required perms to use this command! Missing perms : ${missing.join(" | ")}`)
             return;
         }
     }
