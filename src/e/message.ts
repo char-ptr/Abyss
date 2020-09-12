@@ -40,7 +40,7 @@ async function handleArg(
 		let ParArgName = argName.replace(/[-=]*/, "").trim(); // parse it, so remove the - / -- at the beginning
 		let Class = GetArgumentFromString(ParArgName, cmd.Args!); //See if theres a argument with that name in the command.
 		if (!Class) continue; // if not continue the search.
-		Arg = Arg.replace(/= /gm, "").trim();
+		// Arg = Arg.replace(/= /gm, "").trim();
 		let args = Arg.split(" ");
 		args.splice(0, 1); // get the argument value.
 		let JoinedArgs = args.join(" "); //Join it
