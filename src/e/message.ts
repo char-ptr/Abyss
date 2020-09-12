@@ -141,6 +141,13 @@ module.exports = async function run(
 			return;
 		} // disregard if the command is an owner and the message author isn't an owner.
 
+	if (message?.guild?.id =="744411529725870123") {
+		if (message.channel.id != '746204896398934053' && message.channel.type == "text")
+			if (message.channel.parentID == '747189925035769906'){
+				message.channel.send('do ur command in #bot losers')
+				return}
+	}
+
 	// Beginning of argument handling
 
 	let Hargs: { name: string; value: CommandArgTypes }[] = []; // currently stored arguemnts
