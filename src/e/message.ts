@@ -140,6 +140,9 @@ module.exports = async function run(
 			);
 			return;
 		} // disregard if the command is an owner and the message author isn't an owner.
+	
+	let blacklistedGuilds = ['744411529725870123']
+	if (blacklistedGuilds.includes(message?.guild?.id ?? '0')) return;
 
 	// Beginning of argument handling
 
