@@ -2,6 +2,8 @@ import {Command, CommandArgTypes, InflictedEffect, Operators, PlayerData} from "
 import {Client, Guild, GuildMember, Message, User} from "discord.js"
 import {Owner} from "./config"
 import {Commands} from "../bot"
+import { MysqlError } from "mysql"
+import { con } from ".."
 
 /**
  * 
@@ -207,6 +209,27 @@ export async function PartialConv <t>(thing : any) : Promise<t> {
     return thing
 
 }
+export function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+export async function AsyncQuery<T>(query : string,args:any[]) : Promise<(T|null)[]> {
+    return new Promise(resolve => {
+        
+        let func = (err:MysqlError|null,result:any)=>{
+            
+            if (err) throw err
+            return resolve(result)
+            
+        }
+        con.query(query,args ?? func, func)
+        
+    })
+    
+}
+
 
 /**
  * 
