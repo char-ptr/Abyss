@@ -40,10 +40,10 @@ module.exports = class test extends Command
 
         console.log(this.GetArg('key',args!))
 
-        let data = await AsyncQuery<{KEYID:string,Registered:Buffer,CreatedAT:Date,RegisteredAT:null|Date,PowerID:number}>('select * from `whitelist`.`keycode` where KEYID = ?',this.GetArg('key',args!))
+        let data = await AsyncQuery<{KEYID:string,Registered:number,CreatedAT:Date,RegisteredAT:null|Date,PowerID:number}>('select * from `whitelist`.`keycode` where KEYID = ?',this.GetArg('key',args!))
         if (!data[0]) return (message.channel.send('Unable to find that key'), {Worked:false})
-        let reg = data[0]?.Registered[0] ? 'true' : 'false'
-        console.log(data[0]?.Registered)
+        let reg = data[0]?.Registered == 1 ? 'true' : 'false'
+        console.log(data[0]?.Registered, reg)
         // console.log(parseInt(data[0]?.Registered) ,'<--')
         let embed = new MessageEmbed()
         .setTitle('Key Data')
