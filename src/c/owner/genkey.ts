@@ -23,7 +23,7 @@ module.exports = class test extends Command
                 Guild : false,
                 Owner : true,
                 Hidden : true,
-                Alias : ['exec'],
+                Alias : ['gek'],
                 Args : [new CommandArgument({
                     Name : 'power',
                     AltNames:['p'],

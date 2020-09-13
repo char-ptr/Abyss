@@ -4,7 +4,7 @@ import { Prefix } from "../m/config";
 import { GetError } from "../m/error";
 import { Convert, GetCommandFromS, IsIdOwner } from "../m/func";
 
-let ArgRex = /-+(?<name>\S*.)(?<value>[^-]*)?/gm;
+let ArgRex = /-+(?<name>\S*.)(?<value>[^( -)]*)?/gm;
 let ArgRex2 = /( |[,])((?<name>\w[^,]+) ?= ?)(?<value>.[^,]*)/gm;
 
 function GetArgumentFromString(s: string, args: CommandArgument[]) {
