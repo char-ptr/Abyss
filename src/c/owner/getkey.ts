@@ -37,22 +37,19 @@ module.exports = class test extends Command
     }
 
     public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ) => {
-
-        console.log(this.GetArg('key',args!))
-
         let data = await AsyncQuery<{KEYID:string,Registered:number,CreatedAT:Date,RegisteredAT:null|Date,PowerID:number}>('select * from `whitelist`.`keycode` where KEYID = ?',this.GetArg('key',args!))
         if (!data[0]) return (message.channel.send('Unable to find that key'), {Worked:false})
         let reg = data[0]?.Registered == 1 ? 'true' : 'false'
-        console.log(data[0]?.Registered, reg)
-        // console.log(parseInt(data[0]?.Registered) ,'<--')
         let embed = new MessageEmbed()
         .setTitle('Key Data')
         .setDescription(`Data on key \`${data[0]?.KEYID}\``)
         .setURL(`https://www.pozm.media/signup?key=${data[0]?.KEYID}`)
         .addField('power', data[0]?.PowerID,true)
-        .addField('Registered', reg,false)
+        .addField('Registered', reg,true)
+        .addField('\u200b', '\u200b',true)
         .addField('created at', data[0]?.CreatedAT.toLocaleDateString('en-gb'),true)
         .addField('Registered at', data[0]?.RegisteredAT ? data[0]?.RegisteredAT .toLocaleDateString('en-gb') : 'N/A',true)
+        .addField('\u200b', '\u200b',true)
 
         message.channel.send(embed)
         return {Worked : true}
