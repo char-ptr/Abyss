@@ -42,7 +42,7 @@ module.exports = class test extends Command
 
         let data = await AsyncQuery<{KEYID:string,Registered:Buffer,CreatedAT:Date,RegisteredAT:null|Date,PowerID:number}>('select * from `whitelist`.`keycode` where KEYID = ?',this.GetArg('key',args!))
         if (!data[0]) return (message.channel.send('Unable to find that key'), {Worked:false})
-        let reg = Boolean(data[0]?.Registered[0])
+        let reg = data[0]?.Registered[0] ? 'true' : 'false'
         console.log(data[0]?.Registered)
         // console.log(parseInt(data[0]?.Registered) ,'<--')
         let embed = new MessageEmbed()
