@@ -9,7 +9,7 @@ if (existsSync(join(__dirname,'../../../Util/hData.json'))) {
 }else{
 	txt = Buffer.from(JSON.stringify({'Normal':[],'Yuri':[]}))
 }
-let files : {[ley:string] : string[], Normal:string[],Yuri:string[]} = JSON.parse(txt.toString('utf8'))
+let files : {[ley:string] : string[]} = JSON.parse(txt.toString('utf8'))
 
 
 
@@ -97,28 +97,26 @@ module.exports = class test extends Command
 		} 
 		
 		const generateByType = (type:string) : string =>{
-			switch (type) {
-				case ('normal'):
-					return 'Normal'
-				break;
-				case ('yuri'):
-					return 'Yuri'
-				break;
-				default : return 'Normal'; break;
+			let out = 'Normal'
+			for (let key of Object.keys(files) ) {
+				if (key.toLowerCase().match((type??'Normal').toLowerCase()))
+				{
+					out= key
+					break;
+				}
 			}
+			console.log(`using type {${out}}, types: {${Object.keys(files).join(', ')}} / ${type}`)
+			return out
 		} 
 
 		let filesu : string[] = [];
 
 		let convsdat = new Map([['r','random'],['l','last'],['f','first']])
 		let convsort = (t:string)=> convsdat.get(t) ?? t
-		
-		let convtdat = new Map([['n','normal'],['y','yuri']])
-		let convType = (t:string)=> convtdat.get(t) ?? t
 
 		let amount = this.GetArg('amount',args!)
 		let sort = convsort (this.GetArg('sort',args!))
-		let type = generateByType (convType (this.GetArg('type',args!)))
+		let type = generateByType(this.GetArg('type',args!))
 		console.log(type)
 
 
@@ -134,7 +132,7 @@ module.exports = class test extends Command
 			]
 		}
 		console.log(filesu,amount)
-		message.channel.send({files:filesu}).catch(r=>{message.channel.send('Unfortunately i was unable to send, Most likely due to being unable to match options you provided');console.log(r)})
+		message.channel.send({files:filesu}).catch(r=>{message.channel.send(`Unfortunately i was unable to send, Most likely due to being unable to match options you provided \n msg for developers: || ${r.message} ||`);console.log(r)})
 
 		return {Worked:true}
 	}

@@ -1,0 +1,14 @@
+place ur large .json file with a bunch of urls to your favourite *sites* in this folder ;)
+format
+
+{
+    "type":[
+        "url1",
+        "url2"
+    ],
+    "type2":[
+        "url1",
+        "url2"
+    ]
+}
+etc.

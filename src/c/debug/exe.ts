@@ -38,6 +38,7 @@ module.exports = class test extends Command
     public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ) => {
         try {
             const code = this.GetArg('code',args!)
+            console.log(code)
             let evaled = await eval(code);
        
             if (typeof evaled !== "string")
