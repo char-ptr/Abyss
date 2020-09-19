@@ -60,6 +60,12 @@ module.exports = class test extends Command
 						Type:'str',
 						AltNames:['f']
 					}),
+					new CommandArgument({
+						Name:'instant',
+						Needed:false,
+						Type:'bool',
+						AltNames:['i']
+					}),
 				]
 			}
 		)
@@ -132,8 +138,12 @@ module.exports = class test extends Command
 			]
 		}
 		console.log(filesu,amount)
-		message.channel.send({files:filesu}).catch(r=>{message.channel.send(`Unfortunately i was unable to send, Most likely due to being unable to match options you provided \n msg for developers: || ${r.message} ||`);console.log(r)})
+		if (!this.GetArg('instant',args!)) {
+			message.channel.send({files:filesu}).catch(r=>{message.channel.send(`Unfortunately i was unable to send, Most likely due to being unable to match options you provided \n msg for developers: || ${r.message} ||`);console.log(r)})
+		} else {
+			message.channel.send(filesu.join(' | ')).catch(r=>{message.channel.send(`Unfortunately i was unable to send, Most likely due to being unable to match options you provided \n msg for developers: || ${r.message} ||`);console.log(r)})
 
+		}
 		return {Worked:true}
 	}
 }
