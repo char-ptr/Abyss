@@ -3,7 +3,7 @@ import {Client, GuildMember, Message, MessageEmbed} from "discord.js";
 
 const keyPerms = ['Kick Members','Ban Members', 'Administrator','Manage Guild','View Audit Log','Mention Everyone']
 
-module.exports = class test extends Command 
+module.exports = class GetInfo extends Command
 {
 
     constructor(  ) 

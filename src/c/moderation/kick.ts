@@ -2,7 +2,7 @@ import { Command, CommandArgument, CommandArgTypes} from "../../m/class";
 import { Client, Message, GuildMember, Guild, Collection, Permissions } from "discord.js";
 
 
-module.exports = class test extends Command 
+module.exports = class Kick extends Command
 {
 
     constructor(  ) 

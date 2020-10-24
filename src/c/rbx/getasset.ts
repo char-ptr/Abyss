@@ -2,7 +2,7 @@ import { Command, CommandArgument, CommandArgTypes} from "../../m/class";
 import { Client, Message, GuildMember, MessageEmbed, MessageAttachment } from "discord.js";
 import got from "got";
 
-module.exports = class test extends Command 
+module.exports = class GetAsset extends Command
 {
 
     constructor(  ) 

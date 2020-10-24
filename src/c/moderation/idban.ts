@@ -8,7 +8,7 @@ import {Client, Message, Permissions} from "discord.js";
  *
  */
 
-module.exports = class test extends Command 
+module.exports = class IDBan extends Command
 {
 
     constructor(  ) 

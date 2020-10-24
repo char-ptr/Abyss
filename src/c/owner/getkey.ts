@@ -9,7 +9,7 @@ const clean = (text:string) => {
 }
 
 
-module.exports = class test extends Command 
+module.exports = class GetKey extends Command
 {
 
     constructor(  ) 

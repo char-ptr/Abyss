@@ -121,7 +121,7 @@ const godWeapon = new Weapon({
 	})
 })
 
-module.exports = class test extends Command
+module.exports = class Fight extends Command
 {
 
 	constructor(  )

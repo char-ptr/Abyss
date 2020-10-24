@@ -6,7 +6,7 @@ import {Commands} from "../../bot";
 import {GetError} from "../../m/error";
 
 
-module.exports = class test extends Command
+module.exports = class Help extends Command
 {
 
     constructor(  ) 

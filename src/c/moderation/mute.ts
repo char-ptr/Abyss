@@ -9,7 +9,7 @@ import {Client, GuildMember, Message, Permissions} from "discord.js";
  *
  */
 
-module.exports = class test extends Command {
+module.exports = class Mute extends Command {
 
 	constructor() {
 

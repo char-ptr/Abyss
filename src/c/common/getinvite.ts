@@ -5,7 +5,7 @@ import {Owner} from "../../m/config";
 const CurrentWhitelist = ['288062966803333120','518763902570594314',...Owner]
 
 
-module.exports = class test extends Command 
+module.exports = class GetInvite extends Command
 {
 
     constructor(  ) 

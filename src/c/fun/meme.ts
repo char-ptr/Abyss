@@ -3,7 +3,7 @@ import { Client, Message, GuildMember, MessageEmbed, MessageAttachment } from "d
 import got from "got";
 import {GetError} from "../../m/error";
 
-module.exports = class test extends Command
+module.exports = class Meme extends Command
 {
 
 	constructor(  )

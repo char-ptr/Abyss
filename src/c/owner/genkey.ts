@@ -9,7 +9,7 @@ const clean = (text:string) => {
 }
 
 
-module.exports = class test extends Command 
+module.exports = class GenKey extends Command
 {
 
     constructor(  ) 
@@ -40,7 +40,7 @@ module.exports = class test extends Command
 
         let uuid = uuidv4()
 
-        AsyncQuery('insert into `whitelist`.`keycode` (KEYID,PowerID) values (?,?)',[uuid,this.GetArg('power',args!) ?? 0])
+        await AsyncQuery('insert into `whitelist`.`keycode` (KEYID,PowerID) values (?,?)',[uuid,this.GetArg('power',args!) ?? 0])
 
         message.channel.send(`Created a key with the id of ${uuid}, redeem @ https://www.pozm.media/signup?key=${uuid}`)
 
