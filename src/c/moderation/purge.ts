@@ -64,7 +64,7 @@ module.exports = class purge extends Command {
     public run = async (message : Message, client : Client, args?: {[x:string]:any} ) => {
 
         let Amount = this.GetArg("messages",args!)
-        message.channel.bulkDelete(Amount,true)
+        message.channel?.bulkDelete(Amount,true)
 
         return {Worked: true} // {Worked:False, Error: new Error('Error Message'))}
     }
