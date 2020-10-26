@@ -1,6 +1,6 @@
 import {Client, Message} from "discord.js";
-import {Prefix} from "../m/config";
-import {IsIdOwner, ParseArgument, ParseStringToCommand} from "../m/func";
+import {GetCommandFromS, IsIdOwner, ParseArgument, ParseStringToCommand} from "../m/func";
+import {Command} from "../m/class";
 // Ran on a new message
 
 module.exports = async function run(
@@ -36,14 +36,10 @@ module.exports = async function run(
 		}
 		if (!Command.Args?.every(v=> {
 			if (!Needed) return false;
-			console.log(v.Name,Needed[v.Name] || v.Needed)
 			return Needed[v.Name] || !v.Needed
 		})) {
-			await message.channel.send("Command has invalid argument")
-			let msgClone = message
-			msgClone.content = `${Prefix}help -cmd "${Command.Name}"`
-
-			client.emit("message", msgClone)
+			await message.channel.send("Command has invalid argument(s)")
+			{await (GetCommandFromS("help") as Command).run(message,client, {"Command":Command.Name})}
 			return;
 		}
 	}
