@@ -317,7 +317,7 @@ class Command {
      * @param args The arguments for this command.
      *
     */
-    public run = async (message : Message, client : Client, args: {[x:string]:any} ): Promise<{Worked : boolean, Error? : Error | string}> => {
+    public run = async (message : Message, client : Client, args: {[x:string]:any} ): Promise<{Worked : false, Error? : Error | string} | {Worked : true}> => {
 
         return {Worked : false, Error : new Error('There is no run function!')}
     }

@@ -79,8 +79,8 @@ module.exports = class test extends Command
 			message.channel.send(`There is currently ${files['Normal'].length + files['Yuri'].length} files in DB`)
 			return {Worked:true}
 		}
-
-		if (this.GetArg('amount',args!) > 20) return {Worked:false, Message:new Error("You are not allowed to request more than 20 images at a time.")}
+		console.log(this.GetArg('amount',args!) > 20)
+		if (this.GetArg('amount',args!) > 20) return {Worked:false, Error:new Error("You are not allowed to request more than 20 images at a time.")}
 
 		let SearchQ : string
 		if (this.GetArg('find',args!))

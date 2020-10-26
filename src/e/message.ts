@@ -33,7 +33,6 @@ module.exports = async function run(
 			if (!output.bool && await output.Value == null && output.CommandArg?.Type === "member") {message.channel.send("Unable to get that member"); return}
 			Needed[output.CommandArg?.Name ?? "__"] = true
 			ArgumentMaped[output.CommandArg?.Name ?? "__"] = !output.bool ? await output.Value : true
-			console.log(output,Needed)
 		}
 		if (!Command.Args?.every(v=> {
 			if (!Needed) return false;
@@ -80,7 +79,7 @@ module.exports = async function run(
 	message.channel.startTyping(); // start typing so in channel you can see that the bot is typing
 	let out = await Command.run(message, client, ArgumentMaped); // run the command and wait until its finished
 	message.channel.stopTyping(); // stop typing sometimes will take longer than expected due to rate limiting
-	if (!out.Worked && out.Error) {
-		message.channel.send( out.Error instanceof Error  ?  out.Error.message : out.Error);
+	if (!out.Worked && out.Error != undefined) {
+		message.channel.send(out.Error.toString());
 	} // if it didn't work and there's and error send that error message.
 };
