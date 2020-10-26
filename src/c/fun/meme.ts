@@ -1,5 +1,5 @@
-import { Command, CommandArgument, CommandArgTypes} from "../../m/class";
-import { Client, Message, GuildMember, MessageEmbed, MessageAttachment } from "discord.js";
+import {Command} from "../../m/class";
+import {Client, Message, MessageEmbed} from "discord.js";
 import got from "got";
 import {GetError} from "../../m/error";
 
@@ -22,7 +22,7 @@ module.exports = class Meme extends Command
 
 	}
 
-	public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ) => {
+	public run = async (message : Message, client : Client, args?: {[x:string]:any} ) => {
 
 		let jsn = JSON.parse( (await got('https://www.reddit.com/r/dankmemes/random.json') ).body )[0].data.children[0].data
 		//console.log(jsn)

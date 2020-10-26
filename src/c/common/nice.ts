@@ -1,5 +1,5 @@
-import { Command, CommandArgument, CommandArgTypes} from "../../m/class";
-import { Client, Message, GuildMember, Guild, Collection, MessageEmbed } from "discord.js";
+import {Command, CommandArgTypes, CommandArgument} from "../../m/class";
+import {Client, Message, MessageEmbed} from "discord.js";
 import {GetError} from "../../m/error";
 
 module.exports = class Nice extends Command
@@ -36,7 +36,7 @@ module.exports = class Nice extends Command
 
     }
 
-    public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ) => {
+    public run = async (message : Message, client : Client, args?: {[x:string]:any} ) => {
         
         let emb = new MessageEmbed
         emb.setThumbnail(client.user!.displayAvatarURL())

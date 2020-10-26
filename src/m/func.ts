@@ -1,9 +1,9 @@
-import {Command, CommandArgTypes, InflictedEffect, Operators, PlayerData} from "./class"
+import {Command, CommandArgTypes, CommandArgument, InflictedEffect, Operators, PlayerData} from "./class"
 import {Client, Guild, GuildMember, Message, User} from "discord.js"
-import {Owner} from "./config"
+import {Owner, Prefix} from "./config"
 import {Commands} from "../bot"
-import { MysqlError } from "mysql"
-import { con } from ".."
+import {MysqlError} from "mysql"
+import {con} from ".."
 
 /**
  * 
@@ -237,9 +237,11 @@ export async function AsyncQuery<T>(query : string,args:any[]) : Promise<(T|null
  * @param wanted The wanted type.
  * @param m Message object.
  */
-const Convert = async <T>(s : string, wanted : keyof CommandArgTypes, m : Message) : Promise<CommandArgTypes|null> => {
+const Convert = async (s : string, wanted : keyof CommandArgTypes, m : Message) : Promise<CommandArgTypes|null> => {
 
     let conv : CommandArgTypes | null = null
+
+    if (s.startsWith('"') && s.endsWith('"')) s = s.slice(1,-1)
 
     switch (wanted) {
         case 'member' as keyof CommandArgTypes:
@@ -272,5 +274,75 @@ const Convert = async <T>(s : string, wanted : keyof CommandArgTypes, m : Messag
     return conv
 
 }
+
+function isBool(a:any) {
+    return a == "true" || a == "false";
+}
+
+export function ParseArgument(Arg : RegExpMatchArray, Message : Message, Command : Command) {
+    if (!Arg.groups) return false;
+    let output : {Error: boolean, Fatal: boolean, Message: string, Value?: string, Name?: string, bool?: boolean, CommandArg: undefined | CommandArgument } = {
+        Error : false,
+        Fatal : false,
+        Message: "xxx",
+        Value: undefined,
+        Name: undefined,
+        bool : false,
+        CommandArg : undefined,
+    }
+    let Name = Arg.groups["A_Name"] ?? Arg.groups["AD_Name"]
+    let Value = Arg.groups["A_Value"]
+    let bool = Arg.groups["AD_Name"] != undefined || isBool(Value) && Value
+    let CommandArg = Command.GetArgument(Name)
+    if (CommandArg) {
+        let Member = Message.member!
+        if (!bool && CommandArg.Type == "bool"){
+            output.Error = true;
+            output.Fatal = true;
+
+            output.Message = "Expected type to be of bool"
+            return output
+        }
+        if (CommandArg.Perms) {
+            let missing = Member.permissions.missing(CommandArg.Perms, true)
+            if (missing.length) {
+                output.Error = true;
+                output.Fatal = true;
+                output.Message = "Missing required permissions, Permissions missing :" + missing.join(" | ")
+                return output
+            }
+        }
+        let conv = !bool ? Convert(Value, CommandArg.Type,Message) : true
+        if (!conv) {
+            output.Error = true;
+            output.Fatal = true;
+            output.Message = `Argument has incorrect type. Expected type of "${CommandArg.Type}" (Unable to parse)`
+            return output
+        }
+        output.CommandArg = CommandArg
+        return {...output, Value:!bool ? conv : undefined, Name, bool}
+
+    } else {
+        output.Error = true;
+        output.Message = "Invalid argument"
+        return output
+    }
+
+
+}
+
+let ArgRex = /-+(?<name>\S*.)(?<value>[^( -)]*)?/gm;
+let ArgRex2 = /( |[,])((?<name>\w[^,]+) ?= ?)(?<value>.[^,]*)/gm;
+let CommandParser = /((?<Prefix>;)(?<Command>\S*)|--(?<AD_Name>\S*)|-(?<A_Name>\w*) +(?<A_Value>".*"|\S*) *)/gim
+export function ParseStringToCommand(s : string) {
+    let SplitBySpace = s.split(/ +/g)
+    let CommandString = SplitBySpace[0]
+    let DoesCommandHavePrefix = CommandString.startsWith(Prefix)
+    if (!DoesCommandHavePrefix) return false;
+    CommandString  = DoesCommandHavePrefix ? CommandString.slice(Prefix.length) : CommandString;
+    let parsedArguments = Array.from(s.matchAll(CommandParser))
+    return {Command : GetCommandFromS(CommandString), Arguments : parsedArguments}
+}
+
 
 export {GetCommandFromS, Convert}

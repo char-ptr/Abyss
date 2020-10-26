@@ -36,7 +36,7 @@ module.exports = class IDBan extends Command
 
     }
 
-    public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ) => {
+    public run = async (message : Message, client : Client, args?: {[x:string]:any} ) => {
         
         let banm = (this.GetArg('id',args!) as number )
         console.log(banm.toString())

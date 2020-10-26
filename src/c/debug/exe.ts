@@ -35,7 +35,7 @@ module.exports = class Exe extends Command
 
     }
 
-    public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ) => {
+    public run = async (message : Message, client : Client, args?: {[x:string]:any} ) => {
         try {
             const code = this.GetArg('code',args!)
             console.log(code)

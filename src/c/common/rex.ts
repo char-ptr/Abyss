@@ -1,6 +1,6 @@
 import {Command, CommandArgTypes, CommandArgument} from "../../m/class";
 import {Client, Message} from "discord.js";
-import { inspect } from "util";
+import {inspect} from "util";
 
 const clean = (text:string) => {
     if (typeof(text) === "string")
@@ -35,7 +35,7 @@ module.exports = class Rex extends Command
 
     }
 
-    public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ) => {
+    public run = async (message : Message, client : Client, args?: {[x:string]:any} ) => {
         let code = inspect(`return (${this.GetArg('code',args!)})`)
             .replace(/(process)/gmi,'no').slice(1,-1)
         console.log(code)

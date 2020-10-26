@@ -1,7 +1,8 @@
-import {Command, CommandArgTypes, CommandArgument} from "../../m/class";
-import {Client, Message, MessageEmbed} from "discord.js";
-import { existsSync, readdirSync, readFileSync } from "fs";
-import { join } from "path";
+import {Command, CommandArgument} from "../../m/class";
+import {Client, Message} from "discord.js";
+import {existsSync, readFileSync} from "fs";
+import {join} from "path";
+
 let txt : Buffer
 if (existsSync(join(__dirname,'../../../Util/hData.json'))) {
 
@@ -72,7 +73,7 @@ module.exports = class test extends Command
 
 	}
 
-	public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ) => {
+	public run = async (message : Message, client : Client, args?: {[x:string]:any} ) => {
 
 		if (this.GetArg('many',args!)) {
 			message.channel.send(`There is currently ${files['Normal'].length + files['Yuri'].length} files in DB`)

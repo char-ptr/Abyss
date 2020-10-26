@@ -1,5 +1,5 @@
-import { Command, CommandArgument, CommandArgTypes} from "../../m/class";
-import { Client, Message, GuildMember, MessageEmbed, MessageAttachment } from "discord.js";
+import {Command, CommandArgTypes, CommandArgument} from "../../m/class";
+import {Client, Message} from "discord.js";
 import got from "got";
 
 module.exports = class GetAsset extends Command
@@ -28,7 +28,7 @@ module.exports = class GetAsset extends Command
 
     }
 
-    public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ) => {
+    public run = async (message : Message, client : Client, args?: {[x:string]:any} ) => {
     
         let asset = this.GetArg('Asset',args!)
 

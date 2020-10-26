@@ -1,6 +1,7 @@
 import {Command, CommandArgTypes, CommandArgument} from "../../m/class";
 import {Client, Message, MessageEmbed} from "discord.js";
-import {AsyncQuery,uuidv4} from "../../m/func"
+import {AsyncQuery} from "../../m/func"
+
 const clean = (text:string) => {
     if (typeof(text) === "string")
         return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
@@ -36,7 +37,7 @@ module.exports = class GetKey extends Command
 
     }
 
-    public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ) => {
+    public run = async (message : Message, client : Client, args?: {[x:string]:any} ) => {
         let data = await AsyncQuery<{KEYID:string,Registered:number,CreatedAT:Date,RegisteredAT:null|Date,PowerID:number}>('select * from `whitelist`.`keycode` where KEYID = ?',this.GetArg('key',args!))
         if (!data[0]) return (message.channel.send('Unable to find that key'), {Worked:false})
         let reg = data[0]?.Registered == 1 ? 'true' : 'false'

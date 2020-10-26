@@ -1,4 +1,4 @@
-import {Command, CommandArgTypes, CommandArgument} from "../../m/class";
+import {Command, CommandArgument} from "../../m/class";
 import {Client, Message, MessageEmbed} from "discord.js";
 import {GetCommandFromS, IsIdOwner} from "../../m/func";
 import {Prefix} from "../../m/config";
@@ -41,7 +41,7 @@ module.exports = class Help extends Command
 
     }
 
-    public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ) => {
+    public run = async (message : Message, client : Client, args?: {[x:string]:any} ) => {
         let cmd : string | undefined = this.GetArg('Command',args!)
 
         if(cmd) {
@@ -57,9 +57,7 @@ module.exports = class Help extends Command
             emb.setTimestamp(new Date())
             emb.setColor('#b0ffa8')
             emb.addField('Usage',`\`\`\`css
-${Prefix}${c.Name} ${c.Args ? c.Args.map(v => `-${v.Type ==='bool'? '-':''}${v.Name}${!v.Needed?'?':''}${v.ExampleVal ? ` (${v.ExampleVal})` : ''}${v.Type !== 'bool'? ' '+v.Type : ''}` ).join(' ') : ''}
-OR
-${Prefix}${c.Name} ${c.Args ? c.Args.map(v => `${v.Name}${!v.Needed?'?':''} = ${v.Type !== 'bool'? ''+v.Type : 'true|false'}` ).join(', ') : ''}\`\`\`
+${Prefix}${c.Name} ${c.Args ? c.Args.map(v => `-${v.Type ==='bool'? '-':''}${v.Name}${!v.Needed?'?':''}${v.ExampleVal ? ` (${v.ExampleVal})` : ''}${v.Type !== 'bool'? ' '+v.Type : ''}` ).join(' ') : ''}\`\`\`
             \`-- = true?, ? = optional, | = or, () = example\``)
             emb.addField('Permissions', c.Perms?.toArray().join(', ') ?? 'No permissions')
             emb.addField('Guild only', c.Guild ? 'Yes' : 'No')

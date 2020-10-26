@@ -1,10 +1,8 @@
-import { Command, CommandArgument, CommandArgTypes} from "../../m/class";
-import { Client, Message, GuildMember } from "discord.js";
+import {Command, CommandArgTypes, CommandArgument} from "../../m/class";
+import {Client, Message} from "discord.js";
 
 
-
-
-module.exports = class test extends Command 
+module.exports = class test extends Command
 {
 
     constructor(  ) 
@@ -29,7 +27,7 @@ module.exports = class test extends Command
 
     }
 
-    public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ) => {
+    public run = async (message : Message, client : Client, args?: {[x:string]:any} ) => {
         console.log('Test worked!', args)
         return {Worked : true}
     }

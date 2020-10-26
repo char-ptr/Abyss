@@ -1,5 +1,5 @@
 import {Client, GuildMember, Message, Permissions, TextChannel} from 'discord.js'
-import {getrnd, RunEffect} from "./func";
+import {GetCommandFromS, RunEffect} from "./func";
 
 
 // interfaces
@@ -290,6 +290,9 @@ class Command {
     readonly Owner  : boolean
     readonly Hidden : boolean
 
+    public GetArgument(Str : string) {
+        return this.Args?.filter(v=>v.Name == Str || v.AltNames?.includes(Str))[0]
+    }
     constructor(Data: CommandData) {
         this.Nsfw   = Data.Nsfw
         this.Name   = Data.Name  
@@ -309,7 +312,7 @@ class Command {
      * @param args The arguments for this command.
      *
     */
-    public run = async <t >(message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ): Promise<{Worked : boolean, Error? : Error}> => {
+    public run = async (message : Message, client : Client, args?: {[x:string]:any} ): Promise<{Worked : boolean, Error? : Error}> => {
 
         return {Worked : false, Error : new Error('There is no run function!')}
     }
@@ -320,13 +323,36 @@ class Command {
      * @param args The arguments passed into the function.
      */
 
-    protected GetArg = ( name : string , args : {name : string, value : CommandArgTypes}[]) : any => {
-        if (!args) return
-        let filt = args.filter(v => v.name === name)[0]
-        if(!filt) return
-        return filt.value;
+    protected GetArg = ( name : string , args : {[x:string]:any}) => {
+
+        return args[name]
 
     }
 
 }
+
+interface InputtedCommandTypes {
+    CommandName : string;
+    Arguments : RegExpMatchArray[]
+}
+
+export class InputtedCommand {
+    public CommandName : string;
+    private ReferencedCommand : Command | null = null;
+    public HasInvalidArguments : boolean = false;
+    public InvalidCommand : boolean = false;
+    // public Arguments : {[Name : string] : string}[]
+
+    constructor(Data : InputtedCommandTypes) {
+        this.CommandName = Data.CommandName
+        let Command = GetCommandFromS(Data.CommandName)
+        if (!Command) {
+            this.ReferencedCommand = null;
+            this.InvalidCommand = true;
+            return;
+        }
+
+    }
+}
+
 export {Command, CommandArgument, CommandArgTypes}

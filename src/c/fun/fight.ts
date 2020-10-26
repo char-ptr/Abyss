@@ -149,7 +149,7 @@ module.exports = class Fight extends Command
 
 	}
 
-	public run = async (message : Message, client : Client, args?: {name : string, value : CommandArgTypes}[] ) => {
+	public run = async (message : Message, client : Client, args?: {[x:string]:any} ) => {
 
 		let opp = this.GetArg('opponent',args!) as GuildMember
 		if(opp.user.bot) return {Worked:false,Error:new Error('You cannot fight bots!')}

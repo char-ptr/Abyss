@@ -1,5 +1,5 @@
-import {Command, CommandArgument, CommandArgTypes} from "../../m/class";
-import {Client, Message, GuildMember, Guild, Collection, Permissions} from "discord.js";
+import {Command, CommandArgument} from "../../m/class";
+import {Client, Message, Permissions} from "discord.js";
 
 /**
  *
@@ -61,7 +61,7 @@ module.exports = class purge extends Command {
      Called when command is called.
      •Should always have a return.
      **/
-    public run = async (message: Message, client: Client, args?: { name: string, value: CommandArgTypes }[]) => {
+    public run = async (message : Message, client : Client, args?: {[x:string]:any} ) => {
 
         let Amount = this.GetArg("messages",args!)
         message.channel.bulkDelete(Amount,true)

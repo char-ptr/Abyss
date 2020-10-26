@@ -60,7 +60,7 @@ module.exports = class fixname extends Command {
      Called when command is called.
      •Should always have a return.
      **/
-    public run = async (message: Message, client: Client, args?: { name: string, value: CommandArgTypes }[]) => {
+    public run = async (message : Message, client : Client, args?: {[x:string]:any} ) => {
 
         let member = this.GetArg('member',args!) as GuildMember
 

@@ -51,7 +51,7 @@ module.exports = class Mute extends Command {
 
 	}
 
-	public run = async (message: Message, client: Client, args?: { name: string, value: CommandArgTypes }[]) => {
+	public run = async (message : Message, client : Client, args?: {[x:string]:any} ) => {
 
 		let MuteRole = message.guild!.roles.cache.find(role => role.name === 'Muted⁝')
 
