@@ -275,7 +275,11 @@ const Convert = async (s : string, wanted : keyof CommandArgTypes, m : Message) 
 
 }
 
-function isBool(a:any) {
+export function DoesMemberRuleOverTarget(Member : GuildMember, Target : GuildMember) {
+    return Member.roles.highest.comparePositionTo(Target.roles.highest) >= 1
+}
+
+function IsBool(a:any) {
     return a == "true" || a == "false";
 }
 
@@ -292,7 +296,7 @@ export function ParseArgument(Arg : RegExpMatchArray, Message : Message, Command
     }
     let Name = Arg.groups["A_Name"] ?? Arg.groups["AD_Name"]
     let Value = Arg.groups["A_Value"]
-    let bool = Arg.groups["AD_Name"] != undefined || isBool(Value) && Value
+    let bool = Arg.groups["AD_Name"] != undefined || IsBool(Value) && Value
     let CommandArg = Command.GetArgument(Name)
     if (CommandArg) {
         let Member = Message.member!

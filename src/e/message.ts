@@ -30,6 +30,7 @@ module.exports = async function run(
 				return;
 			}
 			if (output.Error && ! output.Fatal) continue;
+			if (!output.bool && await output.Value == null && output.CommandArg?.Type === "member") {message.channel.send("Unable to get that member"); return}
 			Needed[output.CommandArg?.Name ?? "__"] = true
 			ArgumentMaped[output.CommandArg?.Name ?? "__"] = !output.bool ? await output.Value : true
 			console.log(output,Needed)

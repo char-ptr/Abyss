@@ -73,12 +73,14 @@ module.exports = class test extends Command
 
 	}
 
-	public run = async (message : Message, client : Client, args?: {[x:string]:any} ) => {
+	public run = async (message : Message, client : Client, args: {[x:string]:any} ) => {
 
 		if (this.GetArg('many',args!)) {
 			message.channel.send(`There is currently ${files['Normal'].length + files['Yuri'].length} files in DB`)
 			return {Worked:true}
 		}
+
+		if (this.GetArg('amount',args!) > 20) return {Worked:false, Message:new Error("You are not allowed to request more than 20 images at a time.")}
 
 		let SearchQ : string
 		if (this.GetArg('find',args!))
@@ -121,7 +123,7 @@ module.exports = class test extends Command
 		let convsdat = new Map([['r','random'],['l','last'],['f','first']])
 		let convsort = (t:string)=> convsdat.get(t) ?? t
 
-		let amount = this.GetArg('amount',args!)
+		let amount = this.GetArg("amount",args)
 		let sort = convsort (this.GetArg('sort',args!))
 		let type = generateByType(this.GetArg('type',args!))
 		console.log(type)
