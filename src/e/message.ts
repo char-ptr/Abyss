@@ -31,7 +31,7 @@ module.exports = async function run(
 			}
 			if (output.Error && ! output.Fatal) continue;
 			Needed[output.CommandArg?.Name ?? "__"] = true
-			ArgumentMaped[output.CommandArg?.Name ?? "__"] = !output.bool ? await output.Value : undefined
+			ArgumentMaped[output.CommandArg?.Name ?? "__"] = !output.bool ? await output.Value : true
 			console.log(output,Needed)
 		}
 		if (!Command.Args?.every(v=> {
