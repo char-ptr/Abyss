@@ -335,5 +335,43 @@ class Command {
     }
 
 }
+interface RatelimitClientType {
+    LimitPerUser? : number;
+    TimeBeforeRequests? : number;
+}
+export class RatelimitClient {
+    private data : {[x:string]:{Dates:number[], Seen:boolean}} = {}
+    public TimeBeforeRequests : number = 7e3
+    public LimitPerUser : number = 5;
+    constructor(Data? : RatelimitClientType) {
+        this.LimitPerUser = Data?.LimitPerUser ?? this.LimitPerUser
+        this.TimeBeforeRequests = Data?.TimeBeforeRequests ?? this.TimeBeforeRequests
+    }
+    public isRateLimited(user:string) : [boolean,number] {
+        if (!this.data[user]) return [false,0];
+        let TimeUntil = Math.abs(Date.now()-this.data[user].Dates[0]-this.TimeBeforeRequests)
+        return [this.data[user]?.Dates.length >= this.LimitPerUser,TimeUntil]
+    }
+    public seen(user:string) {
+        if (!this.data[user]) return;
+        this.data[user].Seen = true;
+    }
+    public hasSeen(user:string) {
+        if (!this.data[user]) return;
+        return this.data[user].Seen
+    }
+    public add(user :string) {
+        if (!this.data[user]) this.data[user] = {Dates:[],Seen:false}
+        this.data[user].Dates=[
+            ...this.data[user].Dates,
+            Date.now()
+        ]
+        setTimeout(v=>{
+            this.data[user].Dates.shift()
+            if (this.data[user].Dates.length == 0) delete this.data[user]
+        },this.TimeBeforeRequests)
+
+    }
+}
 
 export {Command, CommandArgument, CommandArgTypes}

@@ -1,22 +1,11 @@
 import {Client, Message} from "discord.js";
 import {GetCommandFromS, IsIdOwner, ParseArgument, ParseStringToCommand} from "../m/func";
-import {Command} from "../m/class";
-import got from "got";
+import {Command, RatelimitClient} from "../m/class";
 // Ran on a new message
 
-let blacklistedUsers : string[] = []
-function UpdateBlacklist() {
-
-	got("https://www.pozm.pw/api/Blacklist_bot").then(resp=>{
-		console.log(resp.statusCode)
-		if (resp.statusCode == 200) {
-			blacklistedUsers = JSON.parse(resp.body)?.Users ?? []
-		}
-	})
-
-}
-UpdateBlacklist()
-setInterval(UpdateBlacklist,3e4)
+let Ratelimiter = new RatelimitClient({
+	LimitPerUser : 3
+})
 
 module.exports = async function run(
 	client: Client,
@@ -31,7 +20,17 @@ module.exports = async function run(
 	if (!CommandData.Command) return;
 	let Command = CommandData.Command
 
-
+	let [IsRatelimited, TimeUntil] = Ratelimiter.isRateLimited(message.author.id)
+	if (IsRatelimited) {
+		if (!Ratelimiter.hasSeen(message.author.id)) {
+			message.channel.send("You have been ratelimited, time until expire : " +  TimeUntil/1000 + "s" )
+			Ratelimiter.seen(message.author.id)
+		}
+		return;
+	}
+	else {
+		Ratelimiter.add(message.author.id)
+	}
 	//arguments
 	let ArgumentMaped : {[x:string]:any} = {}
 	let Needed = Command.Args?.map(v=>{return {[v.Name]:false}}).reduce((v,b)=>{return{...v,...b}})
@@ -90,7 +89,6 @@ module.exports = async function run(
 	
 	let blacklistedGuilds = ['744411529725870123']
 	if (blacklistedGuilds.includes(message?.guild?.id ?? '0') && !IsIdOwner(message.author.id)) return;
-	if (blacklistedUsers.includes(message.member?.id ?? "0")) return;
 
 	message.channel.startTyping(); // start typing so in channel you can see that the bot is typing
 	let out = await Command.run(message, client, ArgumentMaped); // run the command and wait until its finished
