@@ -81,6 +81,6 @@ module.exports = async function run(
 	let out = await Command.run(message, client, ArgumentMaped); // run the command and wait until its finished
 	message.channel.stopTyping(); // stop typing sometimes will take longer than expected due to rate limiting
 	if (!out.Worked && out.Error) {
-		message.channel.send(out.Error.message);
+		message.channel.send( out.Error instanceof Error  ?  out.Error.message : out.Error);
 	} // if it didn't work and there's and error send that error message.
 };
