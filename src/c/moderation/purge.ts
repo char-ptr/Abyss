@@ -1,5 +1,5 @@
 import {Command, CommandArgument} from "../../m/class";
-import {Client, Message, Permissions} from "discord.js";
+import {Client, GuildChannel, Message, Permissions} from "discord.js";
 
 /**
  *
@@ -64,7 +64,8 @@ module.exports = class purge extends Command {
     public run = async (message : Message, client : Client, args?: {[x:string]:any} ) => {
 
         let Amount = this.GetArg("messages",args!)
-        message.channel?.bulkDelete(Amount,true)
+        if (!(message.channel instanceof GuildChannel)) return {Worked: false, Error : new Error("executed in non guild channel?")}
+        message.channel!.bulkDelete(Amount,true)
 
         return {Worked: true} // {Worked:False, Error: new Error('Error Message'))}
     }
