@@ -57,8 +57,8 @@ module.exports = class Rex extends Command
             })
             let Embed = new MessageEmbed()
                 .setAuthor(message.author.username,message.author.avatarURL({dynamic:true,size:512}) ?? "")
-                .addField("**Last Statement**", `\`\`\`js\n${FitStr(output.toString(),400)}\`\`\``,true)
-                .addField("**Entered Code**", `\`\`\`js\n${FitStr(inspect(this.GetArg("code",args)),400)}\`\`\``,true)
+                .addField("**Last Statement**", `\`\`\`js\n${FitStr(inspect(output).replace(/`/gmi, "\\`"),400)}\`\`\``,true)
+                .addField("**Entered Code**", `\`\`\`js\n${FitStr(inspect(this.GetArg("code",args).replace(/`/gmi,"\\`")),400)}\`\`\``,true)
                 .addField("**Context**", `\`\`\`js\n${FitStr(inspect(context),1000)}\`\`\``,false)
                 .setColor("#9ae28b")
             message.channel.send(Embed);
