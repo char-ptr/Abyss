@@ -40,7 +40,7 @@ module.exports = class Rex extends Command
 
             new Function(this.GetArg("code",args))
         } catch (e) {
-            return {Worked :false, Error:e.toString()}
+            return {Worked :false, Error:FitStr(e.toString(),500)}
         }
         let context = {
 
@@ -64,7 +64,7 @@ module.exports = class Rex extends Command
             message.channel.send(Embed);
         }
         catch (e) {
-            return {Worked :false, Error:e.toString()}
+            return {Worked :false, Error:FitStr(e.toString(),500)}
         }
 
         return {Worked : true}
