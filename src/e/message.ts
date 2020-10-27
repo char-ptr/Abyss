@@ -91,9 +91,12 @@ module.exports = async function run(
 	if (blacklistedGuilds.includes(message?.guild?.id ?? '0') && !IsIdOwner(message.author.id)) return;
 
 	message.channel.startTyping(); // start typing so in channel you can see that the bot is typing
-	let out = await Command.run(message, client, ArgumentMaped); // run the command and wait until its finished
-	message.channel.stopTyping(); // stop typing sometimes will take longer than expected due to rate limiting
-	if (!out.Worked && out.Error != undefined) {
-		message.channel.send(out.Error.toString());
-	} // if it didn't work and there's and error send that error message.
+	Command.run(message, client, ArgumentMaped).then(out=>{
+		message.channel.stopTyping(); // stop typing sometimes will take longer than expected due to rate limiting
+		if (!out.Worked && out.Error != undefined) {
+			message.channel.send(out.Error.toString());
+		} // if it didn't work and there's and error send that error message.
+	}, rej =>{
+		console.log(rej)
+	})
 };
