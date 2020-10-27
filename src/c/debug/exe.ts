@@ -1,11 +1,13 @@
 import {Command, CommandArgTypes, CommandArgument} from "../../m/class";
-import {Client, Message} from "discord.js";
+import {Client, Message, MessageEmbed} from "discord.js";
+import vm from "vm";
+import {inspect} from "util";
 
-const clean = (text:string) => {
-    if (typeof(text) === "string")
-        return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
-    else
-        return text;
+function FitStr(s:string,max:number){
+    if (s.length-1 > max){
+        return s.slice(0,max-3) + "..."
+    }
+    return s;
 }
 
 
@@ -35,18 +37,35 @@ module.exports = class Exe extends Command
 
     }
 
-    public run = async (message : Message, client : Client, args?: {[x:string]:any} ) => {
+    public run = async (message : Message, client : Client, args: {[x:string]:any} ) => {
         try {
-            const code = this.GetArg('code',args!)
-            console.log(code)
-            let evaled = await eval(code);
-       
-            if (typeof evaled !== "string")
-              evaled = require("util").inspect(evaled);
-       
-              message.channel.send(clean(evaled), {code:"ts", split:true});
-        } catch (err) {
-            message.channel.send(`\`ERROR\` \`\`\`ts\n${clean(err)}\n\`\`\``);
+
+            new Function(this.GetArg("code",args))
+        } catch (e) {
+            return {Worked :false, Error:e.toString()}
+        }
+        let context = {
+            message,client,args,require,process
+        }
+        vm.createContext(context)
+        let script = new vm.Script(this.GetArg("code",args), {
+            displayErrors:true,
+        })
+        try {
+            let output = script.runInContext(context, {
+                filename: "index.js",
+                timeout:1e3,
+                displayErrors:true
+            })
+            let Embed = new MessageEmbed()
+                .setAuthor(message.author.username,message.author.avatarURL({dynamic:true,size:512}) ?? "")
+                .addField("**Last Statement**", `\`\`\`js\n${FitStr(inspect(output),400)}\`\`\``,true)
+                .addField("**Entered Code**", `\`\`\`js\n${FitStr(inspect(this.GetArg("code",args)),400)}\`\`\``,true)
+                .setColor("#9ae28b")
+            message.channel.send(Embed);
+        }
+        catch (e) {
+            return {Worked :false, Error:e.toString()}
         }
 
 

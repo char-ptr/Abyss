@@ -3,13 +3,12 @@ import {Client, Message, MessageEmbed} from "discord.js";
 import {inspect} from "util";
 import vm from "vm"
 
-const clean = (text:string) => {
-    if (typeof(text) === "string")
-        return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
-    else
-        return text;
+function FitStr(s:string,max:number){
+    if (s.length-1 > max){
+        return s.slice(0,max-3) + "..."
+    }
+    return s;
 }
-
 
 module.exports = class Rex extends Command
 {
@@ -58,9 +57,9 @@ module.exports = class Rex extends Command
             })
             let Embed = new MessageEmbed()
                 .setAuthor(message.author.username,message.author.avatarURL({dynamic:true,size:512}) ?? "")
-                .addField("**Last expression**", `\`\`\`js\n${output}\`\`\``,true)
-                .addField("**Context**", `\`\`\`js\n${inspect(context)}\`\`\``,true)
-                .addField("**Entered Code**", `\`\`\`js\n${inspect(this.GetArg("code",args))}\`\`\``,true)
+                .addField("**Last Statement**", `\`\`\`js\n${FitStr(output.toString(),400)}\`\`\``,true)
+                .addField("**Entered Code**", `\`\`\`js\n${FitStr(inspect(this.GetArg("code",args)),400)}\`\`\``,true)
+                .addField("**Context**", `\`\`\`js\n${FitStr(inspect(context),1000)}\`\`\``,false)
                 .setColor("#9ae28b")
             message.channel.send(Embed);
         }
