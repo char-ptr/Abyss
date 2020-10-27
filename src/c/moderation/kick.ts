@@ -45,10 +45,10 @@ module.exports = class Kick extends Command
     public run = async (message : Message, client : Client, args?: {[x:string]:any} ) => {
         
         let kickm = (this.GetArg('person',args!) as GuildMember )
-        if  (! this.GetArg('silent',args!)) kickm.send(`You have been kicked from ${message.guild!.name} for the reason of ${this.GetArg('reason',args!) ?? 'No reason.'}`)
+        if  (! this.GetArg('silent',args!)) await kickm.send(`You have been kicked from ${message.guild!.name} for the reason of "${this.GetArg('reason',args!) ?? 'No reason.'}"`)
         kickm.kick(this.GetArg('reason',args!) ?? 'No reason.')
-            .then( (v) => message.channel.send(`Successfully kicked ${v.displayName} with reason of ${this.GetArg('reason',args!) ?? 'No reason.'}`))
-            .catch(() => message.channel.send('I do not have the required permissions to kick this user.'))
+            .then( (v) => message.channel.send(`Successfully Banned ${v.displayName} with reason of ${this.GetArg('reason',args!) ?? 'No reason.'}`),
+                re => message.channel.send('I do not have the required permissions to ban this user.'))
 
         return {Worked : true}
     }

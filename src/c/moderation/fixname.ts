@@ -68,7 +68,7 @@ module.exports = class fixname extends Command {
 
         let fixed = member.displayName.replace(DetectionRegex,'')
 
-        member.setNickname(fixed == '' ?'No Name #'+member.user.discriminator : fixed)
+        member.setNickname(fixed == '' ?'No Name #'+member.user.discriminator : fixed).then(m=>message.channel.send("Changed nickname to " + fixed),reason => message.channel.send("Invalid perms to change nickname"))
 
         return {Worked: true} // {Worked:False, Error: new Error('Error Message'))}
     }

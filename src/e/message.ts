@@ -31,6 +31,10 @@ module.exports = async function run(
 	else {
 		Ratelimiter.add(message.author.id)
 	}
+	if (!message.guild && Command.Guild) {
+		message.channel.send("You must be in a guild to execute this command")
+		return;
+	}
 	//arguments
 	let ArgumentMaped : {[x:string]:any} = {}
 	let Needed = Command.Args?.map(v=>{return {[v.Name]:false}}).reduce((v,b)=>{return{...v,...b}})
