@@ -39,17 +39,14 @@ module.exports = class Rex extends Command
         try {
 
             new Function(this.GetArg("code",args))
-        } catch (e) {
-            return {Worked :false, Error:FitStr(e.toString(),500)}
-        }
-        let context = {
+            let context = {
 
-        }
-        vm.createContext(context)
-        let script = new vm.Script(this.GetArg("code",args), {
-            displayErrors:true,
-        })
-        try {
+            }
+
+            vm.createContext(context)
+            let script = new vm.Script(this.GetArg("code",args), {
+                displayErrors:true,
+            })
             let output = script.runInNewContext(context, {
                 filename: "index.js",
                 timeout:1e3,
