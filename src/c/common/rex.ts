@@ -40,7 +40,7 @@ module.exports = class Rex extends Command
 
             new Function(this.GetArg("code",args))
             let context = {
-
+                // console : { log : undefined }
             }
 
             vm.createContext(context)
@@ -54,9 +54,9 @@ module.exports = class Rex extends Command
             })
             let Embed = new MessageEmbed()
                 .setAuthor(message.author.username,message.author.avatarURL({dynamic:true,size:512}) ?? "")
-                .addField("**Last Statement**", `\`\`\`js\n${FitStr(inspect(output).replace(/`/gmi, "\\`"),400)}\`\`\``,true)
-                .addField("**Entered Code**", `\`\`\`js\n${FitStr(inspect(this.GetArg("code",args).replace(/`/gmi,"\\`")),400)}\`\`\``,true)
-                .addField("**Context**", `\`\`\`js\n${FitStr(inspect(context),1000)}\`\`\``,false)
+                .addField("**Last Statement**", `\`\`\`js\n${FitStr(inspect(output).replace(/``/gmi, "`` "),400)}\`\`\``,true)
+                .addField("**Entered Code**", `\`\`\`js\n${FitStr(inspect(this.GetArg("code",args).replace(/``/gmi, "`` "),),400)}\`\`\``,true)
+                .addField("**Context**", `\`\`\`js\n${FitStr(inspect(context).replace(/\`\`/gmi, "\`\` "),1000)}\`\`\``,false)
                 .setColor("#9ae28b")
             message.channel.send(Embed);
         }
