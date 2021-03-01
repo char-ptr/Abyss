@@ -245,35 +245,34 @@ const Convert = async (s : string, wanted : keyof CommandArgTypes, m : Message) 
 
     switch (wanted) {
         case 'member' as keyof CommandArgTypes:
-            
+
             conv = await GetMemberFromGuild(m,s) as CommandArgTypes
 
-        break;
+            break;
         case 'str' as keyof CommandArgTypes:
 
             conv = s as CommandArgTypes
 
-        break;
+            break;
         case 'num' as keyof CommandArgTypes:
 
             conv = isNaN(Number(s)) ? null : parseInt(s) as CommandArgTypes
 
-        break;
+            break;
         case 'bool' as keyof CommandArgTypes:
 
             conv = (s === 'true') as CommandArgTypes
 
-        break;
+            break;
         default:
             console.log('Unable to find that type.')
             return null
     } //@todo probably a better way to do this.
 
-
-
     return conv
 
 }
+
 
 export function DoesMemberRuleOverTarget(Member : GuildMember, Target : GuildMember) {
     return Member.roles.highest.comparePositionTo(Target.roles.highest) >= 1
@@ -283,7 +282,7 @@ function IsBool(a:any) {
     return a == "true" || a == "false";
 }
 
-export function ParseArgument(Arg : RegExpMatchArray, Message : Message, Command : Command) {
+export async function ParseArgument(Arg : RegExpMatchArray, Message : Message, Command : Command) {
     if (!Arg.groups) return false;
     let output : {Error: boolean, Fatal: boolean, Message: string, Value?: string, Name?: string, bool?: boolean, CommandArg: undefined | CommandArgument } = {
         Error : false,
@@ -294,9 +293,9 @@ export function ParseArgument(Arg : RegExpMatchArray, Message : Message, Command
         bool : false,
         CommandArg : undefined,
     }
-    let Name = Arg.groups["A_Name"] ?? Arg.groups["AD_Name"]
-    let Value = Arg.groups["A_Value"]
-    let bool = Arg.groups["AD_Name"] != undefined || IsBool(Value) && Value
+    let Name = Arg.groups["key"] ?? Arg.groups["keyb"]
+    let Value = Arg.groups["value"]?.trim()
+    let bool = Arg.groups["keyb"] != undefined || IsBool(Value) && Value
     let CommandArg = Command.GetArgument(Name)
     if (CommandArg) {
         let Member = Message.member!
@@ -334,19 +333,18 @@ export function ParseArgument(Arg : RegExpMatchArray, Message : Message, Command
 
 
 }
-
-let ArgRex = /-+(?<name>\S*.)(?<value>[^( -)]*)?/gm;
-let ArgRex2 = /( |[,])((?<name>\w[^,]+) ?= ?)(?<value>.[^,]*)/gm;
-let CommandParser = /((?<Prefix>;)(?<Command>\S*)|--(?<AD_Name>\S*)|-(?<A_Name>\w*) +(?<A_Value>".*"|\S*) *)/gim
+let CommandBeginMatcher = /^(?<Prefix>.)(?<Command>\S*)/gims
+let CommandArgumentMatcher = /(--(?<keyb>\S+)|-(?<key>\S+) (?<value>"[^-]+"|[^-]*))/gims
 export function ParseStringToCommand(s : string) {
     let SplitBySpace = s.split(/ +/g)
     let CommandString = SplitBySpace[0]
     let DoesCommandHavePrefix = CommandString.startsWith(Prefix)
     if (!DoesCommandHavePrefix) return false;
     CommandString  = DoesCommandHavePrefix ? CommandString.slice(Prefix.length) : CommandString;
-    let parsedArguments = Array.from(s.matchAll(CommandParser))
+    let parsedArguments = [...s.matchAll(CommandArgumentMatcher) ?? []]
     return {Command : GetCommandFromS(CommandString), Arguments : parsedArguments}
 }
+
 
 
 export {GetCommandFromS, Convert}

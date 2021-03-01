@@ -1,4 +1,4 @@
-import {Client, GuildMember, Message, Permissions, TextChannel, User} from 'discord.js'
+import {Client, GuildMember, Message, Permissions, TextChannel} from 'discord.js'
 import {RunEffect} from "./func";
 
 
@@ -266,18 +266,26 @@ class CommandArgument {
     readonly prefix?    : string
     readonly ExampleVal?: string
     readonly Type       : keyof CommandArgTypes
+
+
+    protected Checks : Map<string,{f:(client:Client,message:Message,args: any)=> Promise<boolean>,e:boolean}>
     constructor (Data   : CommandAData) {
 
         this.Name       = Data.Name
         this.AltNames   = Data.AltNames
         this.Needed     = Data.Needed
-        this.ExampleVal = Data.ExampleVal 
+        this.ExampleVal = Data.ExampleVal
         this.Perms      = Data.Perms    ?? null
         this.prefix     = Data.prefix   ?? ''
         this.Type       = Data.Type as keyof CommandArgTypes
-        
+
+        this.Checks = new Map<string, {f: (client: Client, message: Message, args: any) => Promise<boolean>; e: boolean}>()
+    }
+    public RunAllChecks(Client:Client,Message:Message, Argument : any) {
+        return Array.from(this.Checks).map(value => value[1].f(Client,Message,Argument))
     }
 }
+type checkf = (client: Client, message: Message, args: {[p: string]: any}) => Promise<boolean>
 
 class Command {
     readonly Name   : string
@@ -290,24 +298,29 @@ class Command {
     readonly Owner  : boolean
     readonly Hidden : boolean
 
-    protected Checks : {[x : string] : (Executor : GuildMember | User, Arguments : {[x:string]:any}) => boolean } = {}
+    protected Checks : Map<string,{f:checkf,e:boolean,s:boolean}>
     public GetArgument(Str : string) {
-        return this.Args?.filter(v=>v.Name == Str || v.AltNames?.includes(Str))[0]
+        return this.Args?.filter(v=>v.Name?.toLowerCase() == Str?.toLowerCase() || v.AltNames?.map(v=>v.toLowerCase()).includes(Str?.toLowerCase()))[0]
     }
     constructor(Data: CommandData) {
         this.Nsfw   = Data.Nsfw
-        this.Name   = Data.Name  
-        this.Desc   = Data.Desc  
+        this.Name   = Data.Name
+        this.Desc   = Data.Desc
         this.Alias  = Data.Alias ?? null
         this.Perms  = Data.Perms ?? null
         this.Args   = Data.Args  ?? undefined
-        this.Guild  = Data.Guild 
-        this.Owner  = Data.Owner 
+        this.Guild  = Data.Guild
+        this.Owner  = Data.Owner
         this.Hidden = Data.Hidden
+
+        this.Checks = new Map<string, {f: checkf, e: boolean,s:boolean}>()
     }
 
-    public RunAllChecks(Member : GuildMember | User, Arguments : {[x:string]:any}) {
-        for (let check of Object.values(this.Checks)) check(Member,Arguments);
+    public RunAllChecks(Client:Client,Message:Message, Arguments : {[x:string]:any}) {
+        return Array.from(this.Checks).map(value => ({val:value[1].f(Client,Message,Arguments),name:value[0],strict:value[1].s}))
+    }
+    protected AddCheck(name:string,Data:{f:checkf,e:boolean,s?:boolean}) {
+        this.Checks.set(name, {...Data, s: Data.s ?? true})
     }
 
     /**
@@ -316,7 +329,8 @@ class Command {
      * @param client The client object.
      * @param args The arguments for this command.
      *
-    */
+     */
+
     public run = async (message : Message, client : Client, args: {[x:string]:any} ): Promise<{Worked : false, Error? : Error | string} | {Worked : true}> => {
 
         return {Worked : false, Error : new Error('There is no run function!')}
@@ -328,7 +342,7 @@ class Command {
      * @param args The arguments passed into the function.
      */
 
-    protected GetArg = ( name : string , args : {[x:string]:any}) => {
+    public GetArg = ( name : string , args : {[x:string]:any}) => {
 
         return args[name]
 

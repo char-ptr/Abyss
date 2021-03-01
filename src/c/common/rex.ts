@@ -37,7 +37,7 @@ module.exports = class Rex extends Command
 
     public run = async (message : Message, client : Client, args: {[x:string]:any} ) => {
         try {
-
+            console.log(this.GetArg("code",args))
             new Function(this.GetArg("code",args))
             let context = {
                 // console : { log : undefined }

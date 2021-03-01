@@ -18,4 +18,5 @@ if (require.main == module) {
 
     m.on('shardCreate', shard => console.log(`Launched shard ${shard.id}`));
     m.on('shardCreate', function (shard) { console.log(`Launched shard ${shard.id}`)} );
+
 }

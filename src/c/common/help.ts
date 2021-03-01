@@ -1,5 +1,5 @@
 import {Command, CommandArgument} from "../../m/class";
-import {Client, Message, MessageEmbed} from "discord.js";
+import {Client, EmbedFieldData, Message, MessageEmbed} from "discord.js";
 import {GetCommandFromS, IsIdOwner} from "../../m/func";
 import {Prefix} from "../../m/config";
 import {Commands} from "../../bot";
@@ -74,13 +74,8 @@ ${Prefix}${c.Name} ${c.Args ? c.Args.map(v => `-${v.Type ==='bool'? '-':''}${v.N
             emb.setTimestamp(new Date())
             emb.setColor('#ffa978')
             emb.setThumbnail(client.user!.displayAvatarURL({dynamic:true}))
-            for (let [folder, value] of Commands.entries()) {
-                let arr = [...value.entries()].filter(v => ! v[1][0].Hidden && ! v[1][1]).map(v => '• '+v[0])
-                //console.log(arr.length,emb.fields.length%3)
-                if (arr.length <= 0) continue;
-                emb.addField(folder,  arr.length <= 0 ? 'No commands!' : arr.join('\n') , emb.fields.length%4 != 3)
+            emb.addFields(Array.from(Commands.entries()).map(([folder,val],index) => ({name:folder,value:[...val.entries()].filter(v => ! v[1][0].Hidden && ! v[1][1]).map(v => '• '+v[0]).join('\n'), inline: index % 4 != 3} as EmbedFieldData) ).filter(v=>v.value.length))
 
-            }
 
             message.channel.send(emb).catch( () => message.channel.send( GetError('NO_EMBED_PERMS')) )
 
