@@ -11,7 +11,7 @@
     "@types/node": "^14.14.16",
     "@types/sequelize": "^4.28.9",
     "discord.js": "^12.2.0",
-    "dotenv": "^8.2.0",
+    "dotenv": "^9.0.2",
     "fs": "0.0.1-security",
     "got": "^11.1.0",
     "mysql": "^2.18.1",
